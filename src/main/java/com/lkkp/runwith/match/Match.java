@@ -1,13 +1,15 @@
 package com.lkkp.runwith.match;
 
-import com.lkkp.runwith.user.User;
+import com.lkkp.runwith.member.Member;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 
 import jakarta.persistence.*;
-import java.util.Date;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Date;
+
+@Getter
 @Entity
 @Table(name = "matches")
 public class Match {
@@ -16,9 +18,12 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nickname;
+    @OneToOne
+    private Member member1;
 
-    private int age;
+    @OneToOne
+    private Member member2;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date matchDate;

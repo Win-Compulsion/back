@@ -1,6 +1,6 @@
 package com.lkkp.runwith.record;
 
-import com.lkkp.runwith.user.User;
+import com.lkkp.runwith.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.util.Date;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "records")
 public class Record {
@@ -21,8 +20,11 @@ public class Record {
     private int time; // in seconds
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    private Date rundate;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
 
     // Getters and setters
