@@ -5,23 +5,24 @@ import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
 @Getter
 @Entity
-@Table(name = "matches")
 public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "match_id")
     private Long id;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member1;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member2;
 
 
