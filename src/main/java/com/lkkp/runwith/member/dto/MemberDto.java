@@ -3,7 +3,8 @@ package com.lkkp.runwith.member.dto;
 import lombok.Data;
 
 @Data
-public class JoinRequest {
+
+public class MemberDto {
 
     private Long id;
     private String name;
