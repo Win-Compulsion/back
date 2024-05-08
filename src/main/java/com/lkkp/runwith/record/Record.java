@@ -22,7 +22,7 @@ public class Record {
     private Date rundate;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "memberID")
     private Member member;
 
 

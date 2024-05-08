@@ -1,5 +1,7 @@
 package com.lkkp.runwith;
 
+import com.lkkp.runwith.match.Match;
+import com.lkkp.runwith.match.repository.MatchRepository;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
@@ -12,17 +14,23 @@ class RunwithApplicationTests {
 
     @Autowired
     private MemberRepository memberRepository;
+    private MatchRepository matchRepository;
 
     @Test
-    void testJPA() {
-        Member member1 = new Member();
-        member1.setId(1L);
-        member1.setName("LMH");
-        member1.setNickname("Handsome");
-        member1.setAge(25);
-        this.memberRepository.save(member1);
+    void crudTest() {
+        Member member = Member.builder()
+                .id(1L)
+                .name("LeeMinhong")
+                .nickname("hong9")
+                .age(25)
+                .build();
 
-        Assertions.assertEquals(member1.getId(), 1);
+        // Create Test
+        memberRepository.save(member);
+
+        // Get Test
+        Member findMem = memberRepository.findById(1L).get();
+        Assertions.assertEquals(findMem.getName(), "LeeMinhong");
 
     }
 
