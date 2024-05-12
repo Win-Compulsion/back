@@ -64,7 +64,7 @@ public class MemberController {
         }
     }
 
-
+    // 회원 수정
     @PostMapping("/member/edit/{id}")
     public String edit(@PathVariable("id") Long id, @RequestBody MemberDto memberDto) {
         String result = memberService.memEdit(id, memberDto);

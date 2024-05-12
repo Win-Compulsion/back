@@ -20,19 +20,23 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
-    private String nickname;
-
-    private int age;
-
-    // 아래는 비공개 정보
-
+    @Column(nullable = false) // 사용자 구글 이메일
     private String email;
 
-    private Timestamp joinDate; // 생성 날짜
+    @Column(nullable = false)
+    private Gender gender;
 
-    private Timestamp lastLoginDate; // 최근 로그인 날짜
+    @Column(nullable = false)
+    private String profileName;
+    @Column(nullable = true)
+    private String profileImg;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private Role role; //ROLE_USER
 
 
     @OneToMany(mappedBy = "member")
@@ -42,18 +46,28 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Record> runRecords;
 
-    public void updateMember(Long id, String name, String nickname, int age) {
-        this.id = id;
-        this.name = name;
-        this.nickname = nickname;
-        this.age = age;
 
+    @Builder
+    public Member(String name, String email, Gender gender,String profileName, String profileImg, Role role){
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.profileName = profileName;
+        this.profileImg = profileImg;
+        this.role = role;
     }
 
 
+    public void updateMember(String profileName, String profileImg) {
+        this.profileName = profileName;
+        this.profileImg = profileImg;
+    }
+
+    public String getRoleKey(){
+        return this.role.getKey();
+    }
+
 //    @OneToMany(mappedBy = "member")
 //    private List<IntervalRank> intervalRanks;
-
-    // Getters and setters
 
 }

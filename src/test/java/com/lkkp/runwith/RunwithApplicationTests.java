@@ -2,7 +2,9 @@ package com.lkkp.runwith;
 
 import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.match.repository.MatchRepository;
+import com.lkkp.runwith.member.Gender;
 import com.lkkp.runwith.member.Member;
+import com.lkkp.runwith.member.Role;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,10 @@ class RunwithApplicationTests {
         Member member = Member.builder()
                 .id(1L)
                 .name("LeeMinhong")
-                .nickname("hong9")
-                .age(25)
+                .email("zif04045@naver.com")
+                .gender(Gender.M)
+                .profileName("홍구99")
+                .role(Role.USER)
                 .build();
 
         // Create Test
