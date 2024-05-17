@@ -1,6 +1,7 @@
 package com.lkkp.runwith.member;
 
 import com.lkkp.runwith.match.Match;
+import com.lkkp.runwith.member.dto.MemberDto;
 import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,6 +56,18 @@ public class Member {
         this.profileName = profileName;
         this.profileImg = profileImg;
         this.role = role;
+    }
+
+    public static Member toEntity(MemberDto dto){
+        return Member.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .gender(dto.getGender())
+                .profileImg(dto.getProfileImg())
+                .profileName(dto.getName())
+                .role(dto.getRole())
+                .build();
     }
 
 

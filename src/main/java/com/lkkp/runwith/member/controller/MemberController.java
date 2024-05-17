@@ -7,6 +7,7 @@ import com.lkkp.runwith.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -29,15 +30,24 @@ public class MemberController {
 
     // 회원 아이디로 조회 > Member JSON 반환
     @GetMapping("/member/{id}")
-    public Member getMember(@PathVariable("id") Long id) {
-        return memberRepository.findById(id).orElseThrow(
-                NoSuchElementException::new);
+    public MemberDto getMember(@PathVariable("id") Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(
+                    NoSuchElementException::new);
+
+        return MemberDto.toDto(member);
     }
 
     // 모든 회원 조회
     @GetMapping("/member/all")
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
+    public List<MemberDto> getAllMembers() {
+
+        List<Member> members = memberRepository.findAll();
+        List<MemberDto> memberDtos = new ArrayList<>();
+        for (Member member : members) {
+            memberDtos.add(MemberDto.toDto(member));
+        }
+
+        return memberDtos;
     }
 
 
@@ -75,6 +85,8 @@ public class MemberController {
             return "EDIT fail";
         }
     }
+
+
 
 
 

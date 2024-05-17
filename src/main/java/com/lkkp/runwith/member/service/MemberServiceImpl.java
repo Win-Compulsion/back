@@ -14,6 +14,8 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
 
+
+
     @Override
     public String memJoin(MemberDto memberDto) {
         Member member = Member.builder()

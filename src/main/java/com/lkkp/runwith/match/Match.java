@@ -16,20 +16,21 @@ public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "match_id")
+    //@Column(name = "id")
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date matchDate;
+
+    @Column(name = "match_id")
+    private Long matchId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member1")
     private Member member;
 
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member2")
-    private Member member2;
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "member2")
+//    private Member member2;
 
 
     // Getters and setters
