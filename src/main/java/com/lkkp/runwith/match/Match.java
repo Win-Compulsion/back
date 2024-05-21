@@ -1,37 +1,37 @@
 package com.lkkp.runwith.match;
 
-import com.lkkp.runwith.member.Member;
-import jakarta.persistence.Entity;
 
+import com.lkkp.runwith.participant.Participant;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Match {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "id")
-    private Long id;
-
-
     @Column(name = "match_id")
     private Long matchId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member1")
-    private Member member;
+    @OneToOne
+    @MapsId // @MapsID로 participant의 매치iD 매핑
+    @JoinColumn(name = "match_id")
+    private Participant participant;
+
+    @Column(nullable = true)
+    private LocalTime startTime;
+
+    @Column(nullable = true)
+    private LocalTime endTime;
 
 
-//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member2")
-//    private Member member2;
-
-
-    // Getters and setters
 }

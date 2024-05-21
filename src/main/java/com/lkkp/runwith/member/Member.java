@@ -1,12 +1,11 @@
 package com.lkkp.runwith.member;
 
-import com.lkkp.runwith.match.Match;
+import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.member.dto.MemberDto;
 import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.security.Timestamp;
 import java.util.List;
 
 @Getter
@@ -41,14 +40,13 @@ public class Member {
 
 
     @OneToMany(mappedBy = "member")
-    private List<Match> matches;
+    private List<Participant> participants;
 
 
     @OneToMany(mappedBy = "member")
     private List<Record> runRecords;
 
 
-    @Builder
     public Member(String name, String email, Gender gender,String profileName, String profileImg, Role role){
         this.name = name;
         this.email = email;
@@ -58,7 +56,7 @@ public class Member {
         this.role = role;
     }
 
-    public static Member toEntity(MemberDto dto){
+    public static Member dtoToEntity(MemberDto dto){
         return Member.builder()
                 .id(dto.getId())
                 .name(dto.getName())
@@ -80,7 +78,5 @@ public class Member {
         return this.role.getKey();
     }
 
-//    @OneToMany(mappedBy = "member")
-//    private List<IntervalRank> intervalRanks;
 
 }

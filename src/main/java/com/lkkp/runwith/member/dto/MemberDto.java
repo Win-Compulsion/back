@@ -3,7 +3,6 @@ package com.lkkp.runwith.member.dto;
 import com.lkkp.runwith.member.Gender;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.Role;
-import com.lkkp.runwith.member.repository.MemberRepository;
 import lombok.Builder;
 import lombok.Data;
 
