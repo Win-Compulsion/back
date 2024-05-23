@@ -19,8 +19,6 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public String memJoin(MemberDto memberDto) {
         Member member = Member.builder()
-                .id(memberDto.getId())
-                .name(memberDto.getName())
                 .email(memberDto.getEmail())
                 .gender(memberDto.getGender())
                 .profileName(memberDto.getProfileName())

@@ -16,7 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
-@Transactional
+//@Transactional
 @SpringBootTest
 class RunwithApplicationTests {
 
@@ -31,8 +31,6 @@ class RunwithApplicationTests {
     @Test
     void crudTest() {
         Member member = Member.builder()
-                .id(1L)
-                .name("LeeMinhong")
                 .email("zif04045@naver.com")
                 .gender(Gender.M)
                 .profileName("홍구99")
@@ -43,35 +41,36 @@ class RunwithApplicationTests {
         memberRepository.save(member);
 
         // Get Test
-        Member findMem = memberRepository.findById(1L).get();
-        Assertions.assertEquals(findMem.getName(), "LeeMinhong");
+       // Member findMem = memberRepository.findById(4L).get();
+        //Assertions.assertEquals(findMem.getName(), "LeeMinhong");
 
     }
 
     @Test
     void matchTest(){
         Member member = Member.builder()
-                .name("SongMin")
-                .email("zif04045@naver.com")
-                .gender(Gender.F)
+                //.name("Kang")
+                .email("cyd04045@naver.com")
+                .gender(Gender.M)
                 .profileName("ddd")
                 .profileImg("d")
                 .role(Role.USER)
                 .build();
         memberRepository.save(member);
 
-        Participant participant = Participant.builder()
-                .member(member)
-                .match_id(1L)
-                .build();
-        participantRepository.save(participant);
 
         Match match = Match.builder()
-                .participant(participant)
-                .startTime(LocalTime.of(10, 0))
-                .endTime(LocalTime.of(12, 0))
+                .matchId(1L)
+                //.startTime(LocalTime.of(10, 0))
+                //.endTime(LocalTime.of(12, 0))
                 .build();
         matchRepository.save(match);
+
+        Participant participant = Participant.builder()
+                .member(member)
+                .match(match)
+                .build();
+        participantRepository.save(participant);
 
 
 //        Participant findParticipant = participantRepository.findById(1L).get();

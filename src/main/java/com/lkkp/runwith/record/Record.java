@@ -1,5 +1,6 @@
 package com.lkkp.runwith.record;
 
+import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,10 +22,17 @@ public class Record {
     @Temporal(TemporalType.TIMESTAMP)
     private Date rundate;
 
+    private float averageSpeed;
+    private Integer runningTime;
+    private Integer changeRating;
+
     @ManyToOne
     @JoinColumn(name = "memberID")
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "matchID")
+    private Match match;
 
-    // Getters and setters
+
 }

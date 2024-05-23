@@ -19,18 +19,13 @@ public class Participant {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "match_id", nullable = false)
-    private Long match_id;
+    @ManyToOne
+    @JoinColumn(name = "match_id")
+    private Match match;
 
 
-
-//    @Builder
-//    public Participant(Long matchId, Member member){
-//        this.matchId = matchId;
-//        this.member = member;
-//    }
 
 }

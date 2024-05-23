@@ -1,20 +1,19 @@
 package com.lkkp.runwith.match;
 
 
+import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.participant.Participant;
+import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 public class Match {
 
@@ -22,10 +21,6 @@ public class Match {
     @Column(name = "match_id")
     private Long matchId;
 
-    @OneToOne
-    @MapsId // @MapsID로 participant의 매치iD 매핑
-    @JoinColumn(name = "match_id")
-    private Participant participant;
 
     @Column(nullable = true)
     private LocalTime startTime;
@@ -33,5 +28,13 @@ public class Match {
     @Column(nullable = true)
     private LocalTime endTime;
 
+    @Column
+    private String matchType;
+
+    @Column
+    private Integer MatchResult;
+
+    @OneToMany(mappedBy = "match")
+    private List<Record> runRecords;
 
 }

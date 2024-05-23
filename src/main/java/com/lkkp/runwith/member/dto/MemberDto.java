@@ -3,15 +3,17 @@ package com.lkkp.runwith.member.dto;
 import com.lkkp.runwith.member.Gender;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MemberDto {
 
-    private Long id;
-    private String name;
     private String email;
     private Gender gender;
     private String profileName;
@@ -20,12 +22,10 @@ public class MemberDto {
 
     public static MemberDto toDto(Member member) {
         return MemberDto.builder()
-                .id(member.getId())
-                .name(member.getName())
                 .email(member.getEmail())
                 .gender(member.getGender())
                 .profileImg(member.getProfileImg())
-                .profileName(member.getName())
+                .profileName(member.getProfileName())
                 .role(member.getRole())
                 .build();
     }
