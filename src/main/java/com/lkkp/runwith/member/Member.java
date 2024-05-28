@@ -28,7 +28,7 @@ public class Member {
     private String email;
 
     @Column(nullable = false)
-    private Gender gender;
+    private boolean gender;
 
     @Column(nullable = false)
     private String profileName;
@@ -78,5 +78,28 @@ public class Member {
         return this.role.getKey();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNickname() {
+        return profileName;
+    }
+
+    public void setNickname(String nickname) {
+        this.profileName = nickname;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
 
 }

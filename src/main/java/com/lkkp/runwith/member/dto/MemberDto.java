@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class MemberDto {
 
     private String email;
-    private Gender gender;
+    private boolean gender;
     private String profileName;
     private String profileImg;
     private Role role;
@@ -23,7 +23,7 @@ public class MemberDto {
     public static MemberDto toDto(Member member) {
         return MemberDto.builder()
                 .email(member.getEmail())
-                .gender(member.getGender())
+                .gender(member.isGender())
                 .profileImg(member.getProfileImg())
                 .profileName(member.getProfileName())
                 .role(member.getRole())

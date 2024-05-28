@@ -37,31 +37,49 @@ public class MatchService {
 
     private static final int MATCH_THRESHOLD = 100;
 
-    private final Map<String, List<String>> waitingQueues = new HashMap<>();
-    private final Map<String, Map<String, Integer>> ratings = new HashMap<>();
+    private final Map<String, Map<Boolean, List<String>>> waitingQueues = new HashMap<>();
+    private final Map<String, Map<Boolean, Map<String, Integer>>> ratings = new HashMap<>();
 
-    public MatchingService() {
-        waitingQueues.put("1km", new ArrayList<>());
-        waitingQueues.put("3km", new ArrayList<>());
-        waitingQueues.put("5km", new ArrayList<>());
+    public void MatchingService() {
+        waitingQueues.put("1km", new HashMap<>());
+        waitingQueues.get("1km").put(true, new ArrayList<>());
+        waitingQueues.get("1km").put(false, new ArrayList<>());
+
+        waitingQueues.put("3km", new HashMap<>());
+        waitingQueues.get("3km").put(true, new ArrayList<>());
+        waitingQueues.get("3km").put(false, new ArrayList<>());
+
+        waitingQueues.put("5km", new HashMap<>());
+        waitingQueues.get("5km").put(true, new ArrayList<>());
+        waitingQueues.get("5km").put(false, new ArrayList<>());
 
         ratings.put("1km", new HashMap<>());
+        ratings.get("1km").put(true, new HashMap<>());
+        ratings.get("1km").put(false, new HashMap<>());
+
         ratings.put("3km", new HashMap<>());
+        ratings.get("3km").put(true, new HashMap<>());
+        ratings.get("3km").put(false, new HashMap<>());
+
         ratings.put("5km", new HashMap<>());
+        ratings.get("5km").put(true, new HashMap<>());
+        ratings.get("5km").put(false, new HashMap<>());
     }
 
     public void addToQueue(Long userId, String distance) {
-        Member user = MemberRepository.findById(userId)
+        Member user = memberRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         int rating = getRating(userId, distance);
 
-        List<String> queue = waitingQueues.get(distance);
-        Map<String, Integer> ratingMap = ratings.get(distance);
+        boolean gender = user.isGender(); // 남녀 구분
+
+        List<String> queue = waitingQueues.get(distance).get(gender);
+        Map<String, Integer> ratingMap = ratings.get(distance).get(gender);
 
         queue.add(user.getNickname());
         ratingMap.put(user.getNickname(), rating);
 
-        tryMatchmaking(distance);
+        tryMatchmaking(distance, gender);
     }
 
     private int getRating(Long userId, String distance) {
@@ -77,9 +95,9 @@ public class MatchService {
         }
     }
 
-    private void tryMatchmaking(String distance) {
-        List<String> queue = waitingQueues.get(distance);
-        Map<String, Integer> ratingMap = ratings.get(distance);
+    private synchronized void tryMatchmaking(String distance, boolean gender) {
+        List<String> queue = waitingQueues.get(distance).get(gender);
+        Map<String, Integer> ratingMap = ratings.get(distance).get(gender);
 
         for (int i = 0; i < queue.size() - 1; i++) {
             String player1 = queue.get(i);
@@ -101,6 +119,36 @@ public class MatchService {
                     return;
                 }
             }
+        }
+    }
+
+    private void sendMatchedUserInfo(String playerNickname, MatchedUserInfo matchedUserInfo) {
+        // WebSocket 메시지 전송 로직
+    }
+
+    public static class MatchedUserInfo {
+        private String matchedUserNickname;
+        private int matchedUserRating;
+
+        public MatchedUserInfo(String matchedUserNickname, int matchedUserRating) {
+            this.matchedUserNickname = matchedUserNickname;
+            this.matchedUserRating = matchedUserRating;
+        }
+
+        public String getMatchedUserNickname() {
+            return matchedUserNickname;
+        }
+
+        public void setMatchedUserNickname(String matchedUserNickname) {
+            this.matchedUserNickname = matchedUserNickname;
+        }
+
+        public int getMatchedUserRating() {
+            return matchedUserRating;
+        }
+
+        public void setMatchedUserRating(int matchedUserRating) {
+            this.matchedUserRating = matchedUserRating;
         }
     }
 
