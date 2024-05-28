@@ -126,6 +126,38 @@ public class MatchService {
         // WebSocket 메시지 전송 로직
     }
 
+    public void updateRatings(String player1Nickname, String player2Nickname, String result) {
+        Member player1 = MemberRepository.findByNickname(player1Nickname)
+                .orElseThrow(() -> new RuntimeException("Player1 not found"));
+        Member player2 = MemberRepository.findByNickname(player2Nickname)
+                .orElseThrow(() -> new RuntimeException("Player2 not found"));
+
+        int player1Rating = player1.getRating();
+        int player2Rating = player2.getRating();
+
+        double expectedScorePlayer1 = 1 / (1 + Math.pow(10, (player2Rating - player1Rating) / 400.0));
+        double expectedScorePlayer2 = 1 - expectedScorePlayer1;
+
+        int k = 40;
+
+        if ("player1".equals(result)) {
+            player1Rating += k * (1 - expectedScorePlayer1);
+            player2Rating += k * (0 - expectedScorePlayer2);
+        } else if ("player2".equals(result)) {
+            player1Rating += k * (0 - expectedScorePlayer1);
+            player2Rating += k * (1 - expectedScorePlayer2);
+        } else if ("draw".equals(result)) {
+            player1Rating += k * (0.5 - expectedScorePlayer1);
+            player2Rating += k * (0.5 - expectedScorePlayer2);
+        }
+
+        player1.setRating(player1Rating);
+        player2.setRating(player2Rating);
+
+        playerRepository.save(player1);
+        playerRepository.save(player2);
+    }
+
     public static class MatchedUserInfo {
         private String matchedUserNickname;
         private int matchedUserRating;

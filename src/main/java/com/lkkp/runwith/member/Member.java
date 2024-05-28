@@ -61,7 +61,7 @@ public class Member {
     public static Member dtoToEntity(MemberDto dto){
         return Member.builder()
                 .email(dto.getEmail())
-                .gender(dto.getGender())
+                .gender(dto.isGender())
                 .profileImg(dto.getProfileImg())
                 .profileName(dto.getProfileName())
                 .role(dto.getRole())
