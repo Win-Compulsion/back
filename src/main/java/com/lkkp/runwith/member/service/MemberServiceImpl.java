@@ -23,7 +23,6 @@ public class MemberServiceImpl implements MemberService{
                 .gender(memberDto.getGender())
                 .profileName(memberDto.getProfileName())
                 .profileImg(memberDto.getProfileImg())
-                .role(memberDto.getRole())
                 .build();
 
         memberRepository.save(member);
@@ -51,5 +50,7 @@ public class MemberServiceImpl implements MemberService{
 
         return "success";
     }
+
+
 
 }

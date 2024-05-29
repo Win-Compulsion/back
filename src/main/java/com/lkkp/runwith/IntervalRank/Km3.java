@@ -29,7 +29,8 @@ public class Km3 {
     @Column(nullable = true)
     private double best_record;
 
-    @OneToOne(mappedBy = "km3")
+    @OneToOne
+    @JoinColumn(name = "member_ID", nullable = true)
     private Member member;
 
 }

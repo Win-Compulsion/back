@@ -8,6 +8,7 @@ import com.lkkp.runwith.member.dto.MemberDto;
 import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.servlet.tags.form.SelectTag;
 
 import java.util.List;
 
@@ -35,16 +36,16 @@ public class Member {
     @Column(nullable = true)
     private String profileImg;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
-    private Role role; //ROLE_USER
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = true)
+//    private Role role; //ROLE_USER
 
 
-    @OneToOne
+    @OneToOne(mappedBy = "member")
     private Km1 km1;
-    @OneToOne
+    @OneToOne(mappedBy = "member")
     private Km3 km3;
-    @OneToOne
+    @OneToOne(mappedBy = "member")
     private Km5 km5;
 
 
@@ -64,7 +65,6 @@ public class Member {
                 .gender(dto.getGender())
                 .profileImg(dto.getProfileImg())
                 .profileName(dto.getProfileName())
-                .role(dto.getRole())
                 .build();
     }
 
@@ -74,9 +74,9 @@ public class Member {
         this.profileImg = profileImg;
     }
 
-    public String getRoleKey(){
-        return this.role.getKey();
-    }
+//    public String getRoleKey(){
+//        return this.role.getKey();
+//    }
 
 
 }

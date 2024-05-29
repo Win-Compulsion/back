@@ -6,7 +6,6 @@ import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.participant.repository.ParticipantRepository;
 import com.lkkp.runwith.member.Gender;
 import com.lkkp.runwith.member.Member;
-import com.lkkp.runwith.member.Role;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,6 @@ class RunwithApplicationTests {
                 .email("zif04045@naver.com")
                 .gender(Gender.M)
                 .profileName("홍구99")
-                .role(Role.USER)
                 .build();
 
         // Create Test
@@ -54,7 +52,6 @@ class RunwithApplicationTests {
                 .gender(Gender.M)
                 .profileName("ddd")
                 .profileImg("d")
-                .role(Role.USER)
                 .build();
         memberRepository.save(member);
 
