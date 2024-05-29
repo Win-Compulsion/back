@@ -85,11 +85,11 @@ public class MatchService {
     private int getRating(Long userId, String distance) {
         switch (distance) {
             case "1km":
-                return Km1Repository.findByUserId(userId).get(0).getRating();
+                return km1Repository.findByUserId(userId).get(0).getRating();
             case "3km":
-                return Km3Repository.findByUserId(userId).get(0).getRating();
+                return km3Repository.findByUserId(userId).get(0).getRating();
             case "5km":
-                return Km5Repository.findByUserId(userId).get(0).getRating();
+                return km5Repository.findByUserId(userId).get(0).getRating();
             default:
                 throw new IllegalArgumentException("Invalid distance");
         }
@@ -126,37 +126,58 @@ public class MatchService {
         // WebSocket 메시지 전송 로직
     }
 
-    public void updateRatings(String player1Nickname, String player2Nickname, String result) {
-        Member player1 = MemberRepository.findByNickname(player1Nickname)
-                .orElseThrow(() -> new RuntimeException("Player1 not found"));
-        Member player2 = MemberRepository.findByNickname(player2Nickname)
-                .orElseThrow(() -> new RuntimeException("Player2 not found"));
+    public void updateRatings(Long user1Id, Long user2Id, String distance, String result) {
+        Member user1 = memberRepository.findById(user1Id)
+                .orElseThrow(() -> new RuntimeException("User1 not found"));
+        Member user2 = memberRepository.findById(user2Id)
+                .orElseThrow(() -> new RuntimeException("User2 not found"));
 
-        int player1Rating = player1.getRating();
-        int player2Rating = player2.getRating();
+        int rating1 = getRating(user1Id, distance);
+        int rating2 = getRating(user2Id, distance);
 
-        double expectedScorePlayer1 = 1 / (1 + Math.pow(10, (player2Rating - player1Rating) / 400.0));
-        double expectedScorePlayer2 = 1 - expectedScorePlayer1;
+        double expectedScore1 = 1 / (1 + Math.pow(10, (rating2 - rating1) / 400.0));
+        double expectedScore2 = 1 - expectedScore1;
 
         int k = 40;
 
-        if ("player1".equals(result)) {
-            player1Rating += k * (1 - expectedScorePlayer1);
-            player2Rating += k * (0 - expectedScorePlayer2);
-        } else if ("player2".equals(result)) {
-            player1Rating += k * (0 - expectedScorePlayer1);
-            player2Rating += k * (1 - expectedScorePlayer2);
+        if ("user1".equals(result)) {
+            rating1 += k * (1 - expectedScore1);
+            rating2 += k * (0 - expectedScore2);
+        } else if ("user2".equals(result)) {
+            rating1 += k * (0 - expectedScore1);
+            rating2 += k * (1 - expectedScore2);
         } else if ("draw".equals(result)) {
-            player1Rating += k * (0.5 - expectedScorePlayer1);
-            player2Rating += k * (0.5 - expectedScorePlayer2);
+            rating1 += k * (0.5 - expectedScore1);
+            rating2 += k * (0.5 - expectedScore2);
         }
 
-        player1.setRating(player1Rating);
-        player2.setRating(player2Rating);
-
-        playerRepository.save(player1);
-        playerRepository.save(player2);
+        updateRating(user1Id, distance, rating1);
+        updateRating(user2Id, distance, rating2);
     }
+
+
+    private void updateRating(Long userId, String distance, int newRating) {
+        switch (distance) {
+            case "1km":
+                Km1 km1 = km1Repository.findByUserId(userId).get(0);
+                km1.setRating(newRating);
+                km1Repository.save(km1);
+                break;
+            case "3km":
+                Km3 km3 = km3Repository.findByUserId(userId).get(0);
+                km3.setRating(newRating);
+                km3Repository.save(km3);
+                break;
+            case "5km":
+                Km5 km5 = km5Repository.findByUserId(userId).get(0);
+                km5.setRating(newRating);
+                km5Repository.save(km5);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid distance");
+        }
+    }
+
 
     public static class MatchedUserInfo {
         private String matchedUserNickname;

@@ -32,6 +32,14 @@ public class Km5 {
     @OneToOne(mappedBy = "km5")
     private Member member;
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
 
 }
 
