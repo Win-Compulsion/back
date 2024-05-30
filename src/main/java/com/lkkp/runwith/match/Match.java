@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "Match_Info", schema = "runwith_db")
 public class Match {
 
     @Id

@@ -6,12 +6,14 @@ import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.TypeAlias;
 
 @Getter
 @Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "Participant", schema = "runwith_db")
 public class Participant {
 
     @Id

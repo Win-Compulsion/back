@@ -10,6 +10,7 @@ import java.util.Date;
 
 @Getter
 @Entity
+@Table(name = "Running_Records", schema = "runwith_db")
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

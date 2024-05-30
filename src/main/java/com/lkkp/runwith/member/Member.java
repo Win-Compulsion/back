@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
+@Table(name = "User_Info", schema = "runwith_db")
 public class Member {
 
     @Id

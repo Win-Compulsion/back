@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "5km_Info", schema = "runwith_db")
 public class Km5 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

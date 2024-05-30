@@ -1,4 +1,5 @@
 package com.lkkp.runwith.match.service;
+
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.IntervalRank.Km1;
@@ -9,6 +10,7 @@ import com.lkkp.runwith.match.repository.MatchRepository;
 import com.lkkp.runwith.IntervalRank.repository.Km1Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km3Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km5Repository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,9 @@ public class MatchService {
 
     @Autowired
     private Km5Repository km5Repository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     private static final int MATCH_THRESHOLD = 100;
 
@@ -123,7 +128,7 @@ public class MatchService {
     }
 
     private void sendMatchedUserInfo(String playerNickname, MatchedUserInfo matchedUserInfo) {
-        // WebSocket 메시지 전송 로직
+        messagingTemplate.convertAndSend("/topic/match", matchedUserInfo);
     }
 
     public void updateRatings(Long user1Id, Long user2Id, String distance, String result) {
