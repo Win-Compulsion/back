@@ -41,14 +41,6 @@ public class Member {
     private Role role; //ROLE_USER
 
 
-    @OneToOne
-    private Km1 km1;
-    @OneToOne
-    private Km3 km3;
-    @OneToOne
-    private Km5 km5;
-
-
     @OneToMany(mappedBy = "member")
     private List<Participant> participants;
 

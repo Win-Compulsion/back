@@ -30,8 +30,13 @@ public class Km5 {
     @Column(nullable = true)
     private double best_record;
 
-    @OneToOne(mappedBy = "km5")
-    private Member member;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Member user;
+
+    public void setUser(Member user) {
+        this.user = user;
+    }
 
     public int getRating() {
         return rating;

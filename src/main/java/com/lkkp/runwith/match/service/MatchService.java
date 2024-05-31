@@ -15,10 +15,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MatchService {
@@ -46,29 +43,24 @@ public class MatchService {
     private final Map<String, Map<Boolean, Map<String, Integer>>> ratings = new HashMap<>();
 
     public void MatchingService() {
+        // 거리별, 성별 대기열 및 레이팅 맵 초기화
         waitingQueues.put("1km", new HashMap<>());
-        waitingQueues.get("1km").put(true, new ArrayList<>());
-        waitingQueues.get("1km").put(false, new ArrayList<>());
-
         waitingQueues.put("3km", new HashMap<>());
-        waitingQueues.get("3km").put(true, new ArrayList<>());
-        waitingQueues.get("3km").put(false, new ArrayList<>());
-
         waitingQueues.put("5km", new HashMap<>());
-        waitingQueues.get("5km").put(true, new ArrayList<>());
-        waitingQueues.get("5km").put(false, new ArrayList<>());
 
         ratings.put("1km", new HashMap<>());
-        ratings.get("1km").put(true, new HashMap<>());
-        ratings.get("1km").put(false, new HashMap<>());
-
         ratings.put("3km", new HashMap<>());
-        ratings.get("3km").put(true, new HashMap<>());
-        ratings.get("3km").put(false, new HashMap<>());
-
         ratings.put("5km", new HashMap<>());
-        ratings.get("5km").put(true, new HashMap<>());
-        ratings.get("5km").put(false, new HashMap<>());
+
+        for (Boolean gender : Arrays.asList(true, false)) { // true: male, false: female
+            waitingQueues.get("1km").put(gender, new ArrayList<>());
+            waitingQueues.get("3km").put(gender, new ArrayList<>());
+            waitingQueues.get("5km").put(gender, new ArrayList<>());
+
+            ratings.get("1km").put(gender, new HashMap<>());
+            ratings.get("3km").put(gender, new HashMap<>());
+            ratings.get("5km").put(gender, new HashMap<>());
+        }
     }
 
     public void addToQueue(Long userId, String distance) {
