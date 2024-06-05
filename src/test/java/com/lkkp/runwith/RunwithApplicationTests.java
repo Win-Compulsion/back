@@ -4,7 +4,6 @@ import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.match.repository.MatchRepository;
 import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.participant.repository.ParticipantRepository;
-import com.lkkp.runwith.member.Gender;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
