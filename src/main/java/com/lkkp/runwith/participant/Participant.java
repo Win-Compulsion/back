@@ -24,10 +24,21 @@ public class Participant {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_id")
     private Match match;
 
+    public void setMemberId(Long memberId) {
+        if (member == null) {
+            member = new Member();
+        }
+        member.setId(memberId);
+    }
 
-
+    public void setMatchId(Long matchId) {
+        if (match == null) {
+            match = new Match();
+        }
+        match.setMatchId(matchId);
+    }
 }

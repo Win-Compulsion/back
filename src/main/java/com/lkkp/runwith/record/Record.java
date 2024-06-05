@@ -35,5 +35,18 @@ public class Record {
     @JoinColumn(name = "matchID")
     private Match match;
 
+    public void setMemberId(Long memberId) {
+        if (member == null) {
+            member = new Member();
+        }
+        member.setId(memberId);
+    }
+
+    public void setMatchId(Long matchId) {
+        if (match == null) {
+            match = new Match();
+        }
+        match.setMatchId(matchId);
+    }
 
 }

@@ -2,11 +2,15 @@ package com.lkkp.runwith.match.service;
 
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.match.Match;
+import com.lkkp.runwith.record.Record;
+import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.IntervalRank.Km1;
 import com.lkkp.runwith.IntervalRank.Km3;
 import com.lkkp.runwith.IntervalRank.Km5;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import com.lkkp.runwith.match.repository.MatchRepository;
+import com.lkkp.runwith.record.repository.RecordRepository;
+import com.lkkp.runwith.participant.repository.ParticipantRepository;
 import com.lkkp.runwith.IntervalRank.repository.Km1Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km3Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km5Repository;
@@ -15,6 +19,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -24,6 +29,12 @@ public class MatchService {
 
     @Autowired
     private MatchRepository matchRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
+
+    @Autowired
+    private RecordRepository recordRepository;
 
     @Autowired
     private Km1Repository km1Repository;
@@ -108,6 +119,8 @@ public class MatchService {
                     queue.remove(player2);
                     System.out.println("Match found: " + player1 + " vs " + player2);
 
+                    saveMatch(player1, player2, distance);
+
                     // 매칭된 상대방 정보 전달
                     MatchedUserInfo player1Info = new MatchedUserInfo(player2, rating2);
                     MatchedUserInfo player2Info = new MatchedUserInfo(player1, rating1);
@@ -118,6 +131,46 @@ public class MatchService {
             }
         }
     }
+
+    private void saveMatch(String player1, String player2, String distance) {
+        // Match 엔티티 저장
+        Match match = new Match();
+        match.setStartTime(LocalDateTime.now());
+        match.setMatchType(distance);
+        match = matchRepository.save(match);
+
+        // Running_Records 엔티티 저장
+/*        Record record1 = new Record();
+        record1.setMemberId(getUserIdByNickname(player1));
+        record1.setMatchId(match.getMatchId());
+        recordRepository.save(record1);
+
+        Record record2 = new Record();
+        record2.setMemberId(getUserIdByNickname(player2));
+        record2.setMatchId(match.getMatchId());
+        recordRepository.save(record2);*/
+
+        // Participant 엔티티 저장
+        Participant participant1 = new Participant();
+        participant1.setMatchId(match.getMatchId());
+        participant1.setMemberId(getUserIdByNickname(player1));
+        participantRepository.save(participant1);
+
+        Participant participant2 = new Participant();
+        participant2.setMatchId(match.getMatchId());
+        participant2.setMemberId(getUserIdByNickname(player2));
+        participantRepository.save(participant2);
+    }
+
+    private Long getUserIdByNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        if (member != null) {
+            return member.getId();
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
 
     private void sendMatchedUserInfo(String playerNickname, MatchedUserInfo matchedUserInfo) {
         messagingTemplate.convertAndSend("/topic/match", matchedUserInfo);

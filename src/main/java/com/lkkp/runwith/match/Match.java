@@ -7,7 +7,7 @@ import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,10 +24,10 @@ public class Match {
 
 
     @Column(nullable = true)
-    private LocalTime startTime;
+    private LocalDateTime startTime;
 
     @Column(nullable = true)
-    private LocalTime endTime;
+    private LocalDateTime endTime;
 
     @Column
     private String matchType;
@@ -37,5 +37,11 @@ public class Match {
 
     @OneToMany(mappedBy = "match")
     private List<Record> runRecords;
+
+    public void setMatchId(Long id) {this.matchId = matchId;}
+
+    public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
+
+    public void setMatchType(String matchType) {this.matchType = matchType;}
 
 }
