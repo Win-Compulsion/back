@@ -29,16 +29,12 @@ public class Member {
     private String email;
 
     @Column(nullable = false)
-    private Gender gender;
+    private Boolean gender;
 
     @Column(nullable = false)
     private String profileName;
     @Column(nullable = true)
     private String profileImg;
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = true)
-//    private Role role; //ROLE_USER
 
 
     @OneToOne(mappedBy = "member")
@@ -74,9 +70,10 @@ public class Member {
         this.profileImg = profileImg;
     }
 
-//    public String getRoleKey(){
-//        return this.role.getKey();
-//    }
+    public boolean isGender(){
+        return gender;
+    }
+
 
 
 }

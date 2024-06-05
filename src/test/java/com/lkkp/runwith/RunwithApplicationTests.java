@@ -31,7 +31,7 @@ class RunwithApplicationTests {
     void crudTest() {
         Member member = Member.builder()
                 .email("zif04045@naver.com")
-                .gender(Gender.M)
+                .gender(true)
                 .profileName("홍구99")
                 .build();
 
@@ -49,7 +49,7 @@ class RunwithApplicationTests {
         Member member = Member.builder()
                 //.name("Kang")
                 .email("cyd04045@naver.com")
-                .gender(Gender.M)
+                .gender(true)
                 .profileName("ddd")
                 .profileImg("d")
                 .build();
