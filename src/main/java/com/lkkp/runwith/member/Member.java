@@ -83,8 +83,8 @@ public class Member {
         return profileName;
     }
 
-    public void setNickname(String nickname) {
-        this.profileName = nickname;
+    public void setNickname(String profileName) {
+        this.profileName = profileName;
     }
 
     public boolean isGender() {

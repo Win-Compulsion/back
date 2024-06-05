@@ -14,8 +14,8 @@ import com.lkkp.runwith.participant.repository.ParticipantRepository;
 import com.lkkp.runwith.IntervalRank.repository.Km1Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km3Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km5Repository;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,30 +23,21 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class MatchService {
-    @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
     private MatchRepository matchRepository;
 
-    @Autowired
     private ParticipantRepository participantRepository;
 
-    @Autowired
     private RecordRepository recordRepository;
 
-    @Autowired
     private Km1Repository km1Repository;
 
-    @Autowired
     private Km3Repository km3Repository;
 
-    @Autowired
     private Km5Repository km5Repository;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     private static final int MATCH_THRESHOLD = 100;
 
@@ -124,8 +115,6 @@ public class MatchService {
                     // 매칭된 상대방 정보 전달
                     MatchedUserInfo player1Info = new MatchedUserInfo(player2, rating2);
                     MatchedUserInfo player2Info = new MatchedUserInfo(player1, rating1);
-                    sendMatchedUserInfo(player1, player1Info);
-                    sendMatchedUserInfo(player2, player2Info);
                     return;
                 }
             }
@@ -162,8 +151,8 @@ public class MatchService {
         participantRepository.save(participant2);
     }
 
-    private Long getUserIdByNickname(String nickname) {
-        Member member = memberRepository.findByNickname(nickname);
+    private Long getUserIdByNickname(String profileName) {
+        Member member = memberRepository.findByNickname(profileName);
         if (member != null) {
             return member.getId();
         } else {
@@ -171,10 +160,6 @@ public class MatchService {
         }
     }
 
-
-    private void sendMatchedUserInfo(String playerNickname, MatchedUserInfo matchedUserInfo) {
-        messagingTemplate.convertAndSend("/topic/match", matchedUserInfo);
-    }
 
     public void updateRatings(Long user1Id, Long user2Id, String distance, String result) {
         Member user1 = memberRepository.findById(user1Id)
