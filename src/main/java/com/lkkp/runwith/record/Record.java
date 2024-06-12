@@ -5,6 +5,8 @@ import com.lkkp.runwith.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+    public void setUserID()
+
 
 import java.util.Date;
 

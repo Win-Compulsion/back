@@ -32,9 +32,7 @@ class RunwithApplicationTests {
     void crudTest() {
         Member member = Member.builder()
                 .email("zif04045@naver.com")
-                .gender(Gender.M)
                 .profileName("홍구99")
-                .role(Role.USER)
                 .build();
 
         // Create Test
@@ -51,10 +49,8 @@ class RunwithApplicationTests {
         Member member = Member.builder()
                 //.name("Kang")
                 .email("cyd04045@naver.com")
-                .gender(Gender.M)
                 .profileName("ddd")
                 .profileImg("d")
-                .role(Role.USER)
                 .build();
         memberRepository.save(member);
 
