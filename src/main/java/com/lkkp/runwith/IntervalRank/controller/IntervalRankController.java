@@ -23,17 +23,17 @@ public class IntervalRankController {
     private Km5Repository km5Repository;
 
     @GetMapping("/km1")
-    public List<Km1> getKm1Info(@RequestParam int user_id) {
+    public List<Km1> getKm1Info(@RequestParam int member_id) {
         return km1Repository.findAll();
     }
 
     @GetMapping("/km3")
-    public List<Km3> getKm3Info(@RequestParam int user_id) {
+    public List<Km3> getKm3Info(@RequestParam int member_id) {
         return km3Repository.findAll();
     }
 
     @GetMapping("/km5")
-    public List<Km5> getKm5Info(@RequestParam int user_id) {
+    public List<Km5> getKm5Info(@RequestParam int member_id) {
         return km5Repository.findAll();
     }
 }

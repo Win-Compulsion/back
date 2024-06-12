@@ -45,6 +45,6 @@ public class Match {
 
     public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
 
-    public void setMatchType(String matchType) {this.matchType = matchType;}
+    public void setMatchType(Boolean matchType) {this.matchType = matchType;}
 
 }

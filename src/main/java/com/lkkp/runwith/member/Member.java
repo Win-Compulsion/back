@@ -70,6 +70,8 @@ public class Member {
         this.profileImg = profileImg;
     }
 
+    public void setId(Long id) {this.id = id;}
+
     public boolean isGender(){
         return gender;
     }
