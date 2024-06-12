@@ -37,6 +37,13 @@ public class MemberController {
         return MemberDto.toDto(member);
     }
 
+    @GetMapping("/member/findemail/{email:.+}")
+    public MemberDto getMemberByEmail(@PathVariable("email") String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+
+        return MemberDto.toDto(member);
+    }
+
     // 모든 회원 조회
     @GetMapping("/member/all")
     public List<MemberDto> getAllMembers() {
@@ -85,15 +92,5 @@ public class MemberController {
             return "EDIT fail";
         }
     }
-
-
-
-
-
-
-
-
-
-
 
 }

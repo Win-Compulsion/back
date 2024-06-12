@@ -29,11 +29,14 @@ public class Match {
     @Column(nullable = true)
     private LocalDateTime endTime;
 
-    @Column
-    private String matchType;
+    @Column // 1km 3km 5km >> 1 3 5
+    private Integer distance;
+
+    @Column // 1 배치했음 0 배치해야됨
+    private Boolean matchType;
 
     @Column
-    private Integer MatchResult;
+    private Integer matchResult;
 
     @OneToMany(mappedBy = "match")
     private List<Record> runRecords;

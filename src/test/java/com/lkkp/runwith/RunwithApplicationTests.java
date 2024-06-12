@@ -4,9 +4,7 @@ import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.match.repository.MatchRepository;
 import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.participant.repository.ParticipantRepository;
-import com.lkkp.runwith.member.Gender;
 import com.lkkp.runwith.member.Member;
-import com.lkkp.runwith.member.Role;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +30,7 @@ class RunwithApplicationTests {
     void crudTest() {
         Member member = Member.builder()
                 .email("zif04045@naver.com")
+                .gender(true)
                 .profileName("홍구99")
                 .build();
 
@@ -49,6 +48,7 @@ class RunwithApplicationTests {
         Member member = Member.builder()
                 //.name("Kang")
                 .email("cyd04045@naver.com")
+                .gender(true)
                 .profileName("ddd")
                 .profileImg("d")
                 .build();

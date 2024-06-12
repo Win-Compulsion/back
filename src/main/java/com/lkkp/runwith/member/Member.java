@@ -8,6 +8,7 @@ import com.lkkp.runwith.member.dto.MemberDto;
 import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.servlet.tags.form.SelectTag;
 
 import java.util.List;
 
@@ -16,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
-@Table(name = "User_Info", schema = "runwith_db")
 public class Member {
 
     @Id
@@ -29,16 +29,20 @@ public class Member {
     private String email;
 
     @Column(nullable = false)
-    private boolean gender;
+    private Boolean gender;
 
     @Column(nullable = false)
     private String profileName;
     @Column(nullable = true)
     private String profileImg;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
-    private Role role; //ROLE_USER
+
+    @OneToOne(mappedBy = "member")
+    private Km1 km1;
+    @OneToOne(mappedBy = "member")
+    private Km3 km3;
+    @OneToOne(mappedBy = "member")
+    private Km5 km5;
 
 
     @OneToMany(mappedBy = "member")
@@ -54,10 +58,9 @@ public class Member {
     public static Member dtoToEntity(MemberDto dto){
         return Member.builder()
                 .email(dto.getEmail())
-                .gender(dto.isGender())
+                .gender(dto.getGender())
                 .profileImg(dto.getProfileImg())
                 .profileName(dto.getProfileName())
-                .role(dto.getRole())
                 .build();
     }
 
@@ -67,32 +70,10 @@ public class Member {
         this.profileImg = profileImg;
     }
 
-    public String getRoleKey(){
-        return this.role.getKey();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNickname() {
-        return profileName;
-    }
-
-    public void setNickname(String profileName) {
-        this.profileName = profileName;
-    }
-
-    public boolean isGender() {
+    public boolean isGender(){
         return gender;
     }
 
-    public void setGender(boolean gender) {
-        this.gender = gender;
-    }
+
 
 }

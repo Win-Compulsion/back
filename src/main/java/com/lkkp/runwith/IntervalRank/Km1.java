@@ -2,17 +2,14 @@ package com.lkkp.runwith.IntervalRank;
 
 import com.lkkp.runwith.member.Member;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "1km_Info", schema = "runwith_db")
 public class Km1 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +27,9 @@ public class Km1 {
     @Column(nullable = true)
     private double best_record;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Member user;
+    @OneToOne
+    @JoinColumn(name = "member_ID", nullable = true)
+    private Member member;
 
-    public void setUser(Member user) {
-        this.user = user;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
 
 }
