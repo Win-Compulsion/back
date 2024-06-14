@@ -34,6 +34,7 @@ public class MatchingService {
     public void joinQueue(Long memberId, Integer distance) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        //rating이 없으면 배치 게임으로 넘김
         if (!hasRating(memberId, distance)) {
             startBatchGame(member, distance);
         }
@@ -43,6 +44,7 @@ public class MatchingService {
         }
     }
 
+    //rating이 있는지 확인
     private boolean hasRating(Long memberId, Integer distance) {
         return switch (distance) {
             case 1 -> km1Repository.findByMemberId(memberId).isPresent();
@@ -52,6 +54,7 @@ public class MatchingService {
         };
     }
 
+    //배치게임 시작
     private void startBatchGame(Member member, Integer distance) {
         // 배치 게임을 시작하는 로직
         System.out.println("Starting batch game for member: " + member.getId() + ", distance: " + distance);
@@ -59,6 +62,7 @@ public class MatchingService {
         // 실제 게임을 시작하는 API 호출 등의 로직을 여기에 추가할 수 있습니다.
     }
 
+    //배치게임 완료 후 레이팅 부여
     @Transactional
     public void completeBatchGame(Long memberId, Integer distance, Integer time) {
         Member member = memberRepository.findById(memberId)
@@ -67,6 +71,7 @@ public class MatchingService {
         updateRating(memberId, distance, initialRating);
     }
 
+    //배치게임 레이팅 계산
     private int calculateInitialRating(Integer time, Integer distance, boolean isMale) {
         int[][] maleTimes = {
                 {336, 278, 236, 206, 184, 141}, // 1km
@@ -155,6 +160,7 @@ public class MatchingService {
         return matchRepository.save(match);
     }
 
+    //거리별 레이팅 가져오는 함수
     private int getRating(Long userId, Integer distance) {
         return switch (distance) {
             case 1 -> km1Repository.findByMemberId(userId).get().getRating();
@@ -164,6 +170,7 @@ public class MatchingService {
         };
     }
 
+    //새로운 레이팅 부여
     public void newRating(Long user1Id, Long user2Id, Integer distance, String result) {
         Member user1 = memberRepository.findById(user1Id)
                 .orElseThrow(() -> new RuntimeException("User1 not found"));
@@ -196,6 +203,7 @@ public class MatchingService {
     }
 
 
+    //레이팅 업데이트
     private void updateRating(Long userId, Integer distance, int newRating) {
         switch (distance) {
             case 1:
