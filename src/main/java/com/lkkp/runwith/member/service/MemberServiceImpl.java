@@ -20,7 +20,7 @@ public class MemberServiceImpl implements MemberService{
     public String memJoin(MemberDto memberDto) {
         Member member = Member.builder()
                 .email(memberDto.getEmail())
-                .gender(memberDto.isGender())
+                .gender(memberDto.getGender())
                 .profileName(memberDto.getProfileName())
                 .profileImg(memberDto.getProfileImg())
                 .build();
