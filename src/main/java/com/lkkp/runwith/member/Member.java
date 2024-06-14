@@ -1,11 +1,15 @@
 package com.lkkp.runwith.member;
 
-import com.lkkp.runwith.match.Match;
+import com.lkkp.runwith.IntervalRank.Km1;
+import com.lkkp.runwith.IntervalRank.Km3;
+import com.lkkp.runwith.IntervalRank.Km5;
+import com.lkkp.runwith.participant.Participant;
+import com.lkkp.runwith.member.dto.MemberDto;
 import com.lkkp.runwith.record.Record;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.servlet.tags.form.SelectTag;
 
-import java.security.Timestamp;
 import java.util.List;
 
 @Getter
@@ -20,40 +24,58 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    private String name;
 
-    private String nickname;
-
-    private int age;
-
-    // 아래는 비공개 정보
-
+    @Column(nullable = false) // 사용자 구글 이메일
     private String email;
 
-    private Timestamp joinDate; // 생성 날짜
+    @Column(nullable = false)
+    private Boolean gender;
 
-    private Timestamp lastLoginDate; // 최근 로그인 날짜
+    @Column(nullable = false)
+    private String profileName;
+    @Column(nullable = true)
+    private String profileImg;
+
+
+    @OneToOne(mappedBy = "member")
+    private Km1 km1;
+    @OneToOne(mappedBy = "member")
+    private Km3 km3;
+    @OneToOne(mappedBy = "member")
+    private Km5 km5;
 
 
     @OneToMany(mappedBy = "member")
-    private List<Match> matches;
+    private List<Participant> participants;
 
 
     @OneToMany(mappedBy = "member")
     private List<Record> runRecords;
 
-    public void updateMember(Long id, String name, String nickname, int age) {
-        this.id = id;
-        this.name = name;
-        this.nickname = nickname;
-        this.age = age;
 
+
+
+    public static Member dtoToEntity(MemberDto dto){
+        return Member.builder()
+                .email(dto.getEmail())
+                .gender(dto.getGender())
+                .profileImg(dto.getProfileImg())
+                .profileName(dto.getProfileName())
+                .build();
     }
 
 
-//    @OneToMany(mappedBy = "member")
-//    private List<IntervalRank> intervalRanks;
+    public void updateMember(String profileName, String profileImg) {
+        this.profileName = profileName;
+        this.profileImg = profileImg;
+    }
 
-    // Getters and setters
+    public void setId(Long id) {this.id = id;}
+
+    public boolean isGender(){
+        return gender;
+    }
+
+
 
 }

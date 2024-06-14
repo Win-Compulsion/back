@@ -1,6 +1,5 @@
 //package com.lkkp.runwith.IntervalRank;
 //
-//import com.lkkp.runwith.member.Member;
 //import jakarta.persistence.*;
 //import lombok.Getter;
 //

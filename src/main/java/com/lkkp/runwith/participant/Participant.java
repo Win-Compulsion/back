@@ -1,38 +1,31 @@
-package com.lkkp.runwith.record;
+package com.lkkp.runwith.participant;
 
 import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.member.Member;
+import jakarta.persistence.Entity;
+
 import jakarta.persistence.*;
-import lombok.Getter;
-
-
-import java.util.Date;
+import lombok.*;
+import org.springframework.data.annotation.TypeAlias;
 
 @Getter
+@Builder
 @Entity
-@Table(name = "Running_Records", schema = "runwith_db")
-public class Record {
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "Participant", schema = "runwith_db")
+public class Participant {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double distance;
-
-    private int time; // in seconds
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date rundate;
-
-    private float averageSpeed;
-    private Integer runningTime;
-    private Integer changeRating;
-
-    @ManyToOne
-    @JoinColumn(name = "memberID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "matchID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "match_id")
     private Match match;
 
     public void setMemberId(Long memberId) {
@@ -48,5 +41,4 @@ public class Record {
         }
         match.setMatchId(matchId);
     }
-
 }

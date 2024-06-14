@@ -4,6 +4,7 @@ import com.lkkp.runwith.member.dto.MemberDto;
 
 public interface MemberService {
 
+
     String memJoin(MemberDto memberDto);
 
     String memLeave(Long id);

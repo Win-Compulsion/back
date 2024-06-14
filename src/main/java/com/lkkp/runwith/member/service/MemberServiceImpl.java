@@ -14,13 +14,15 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
 
+
+
     @Override
-    public String memJoin(MemberDto memberDTO) {
+    public String memJoin(MemberDto memberDto) {
         Member member = Member.builder()
-                .id(memberDTO.getId())
-                .name(memberDTO.getName())
-                .nickname(memberDTO.getNickname())
-                .age(memberDTO.getAge())
+                .email(memberDto.getEmail())
+                .gender(memberDto.getGender())
+                .profileName(memberDto.getProfileName())
+                .profileImg(memberDto.getProfileImg())
                 .build();
 
         memberRepository.save(member);
@@ -42,11 +44,13 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findById(id).orElseThrow(
                 NoSuchElementException::new);
 
-        member.updateMember(memberDto.getId(), memberDto.getName(), memberDto.getNickname(), memberDto.getAge());
+        member.updateMember(memberDto.getProfileName(), memberDto.getProfileImg());
         memberRepository.save(member);
 
 
         return "success";
     }
+
+
 
 }
