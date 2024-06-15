@@ -18,6 +18,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class MatchingService {
@@ -161,6 +163,8 @@ public class MatchingService {
     @Transactional
     public Match createMatch(Member member1, Member member2, Integer distance) {
         Match match = new Match();
+        match.setStartTime(LocalDateTime.now()); // Set start time
+        match.setMatchType("Ranked"); // Set match type
         Participant participant1 = Participant.builder()
                 .match(match)
                 .member(member1)
@@ -238,6 +242,15 @@ public class MatchingService {
             default:
                 throw new IllegalArgumentException("Invalid distance");
         }
+    }
+
+    @Transactional
+    public void completeMatch(Long matchId, Integer result) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new RuntimeException("Match not found"));
+        match.setEndTime(LocalDateTime.now());
+        match.setMatchResult(result);
+        matchRepository.save(match);
     }
 
     // 매치 조회, 업데이트, 삭제 등의 추가 메서드를 구현

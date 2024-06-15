@@ -1,6 +1,7 @@
 package com.lkkp.runwith.match;
 
 
+import com.lkkp.runwith.location.Location;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.record.Record;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -33,7 +35,7 @@ public class Match {
     private Integer distance;
 
     @Column // 1 배치했음 0 배치해야됨
-    private Boolean matchType;
+    private String matchType;
 
     @Column
     private Integer matchResult;
@@ -41,10 +43,22 @@ public class Match {
     @OneToMany(mappedBy = "match")
     private List<Record> runRecords;
 
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    private List<Location> locations = new ArrayList<>();
+
     public void setMatchId(Long id) {this.matchId = matchId;}
 
     public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
 
-    public void setMatchType(Boolean matchType) {this.matchType = matchType;}
+    public void setMatchType(String matchType) {this.matchType = matchType;}
+
+    public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
+
+    public void setMatchResult(Integer matchResult) {this.matchResult = matchResult;}
+
+    public void addLocation(Location location) {
+        locations.add(location);
+        location.setMatch(this);
+    }
 
 }
