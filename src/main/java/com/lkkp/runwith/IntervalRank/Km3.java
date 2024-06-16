@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "3km_Info", schema = "runwith_db")
 public class Km3 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,7 @@ public class Km3 {
     private double best_record;
 
     @OneToOne
-    @JoinColumn(name = "member_ID", nullable = true)
+    @JoinColumn(name = "user_ID", nullable = true)
     private Member member;
 
 }

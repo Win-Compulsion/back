@@ -36,7 +36,7 @@ public class Location {
     private LocalDateTime GPStime;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_id")
     private Match match;
 

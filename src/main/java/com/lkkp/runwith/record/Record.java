@@ -28,11 +28,11 @@ public class Record {
     private Integer changeRating;
 
     @ManyToOne
-    @JoinColumn(name = "memberID")
+    @JoinColumn(name = "user_ID")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "matchID")
+    @JoinColumn(name = "match_ID")
     private Match match;
 
     public void setMemberId(Long memberId) {

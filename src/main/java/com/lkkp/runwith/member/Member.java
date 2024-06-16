@@ -17,11 +17,12 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
+@Table(name = "User_Info", schema = "runwith_db")
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "user_id")
     private Long id;
 
 
