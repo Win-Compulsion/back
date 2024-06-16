@@ -5,6 +5,7 @@ import com.lkkp.runwith.match.Match;
 import com.lkkp.runwith.member.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "Running_Records", schema = "runwith_db")
 public class Record {
@@ -30,7 +32,7 @@ public class Record {
     @Column(name = "AverageSpeed")
     private float averageSpeed;
     @Column(name = "RunningTime")
-    private Integer runningTime;
+    private Long runningTime;
     @Column(name = "changedRating")
     private Integer changeRating;
 
