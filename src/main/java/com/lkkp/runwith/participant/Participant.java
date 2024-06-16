@@ -1,44 +1,50 @@
-package com.lkkp.runwith.participant;
+    package com.lkkp.runwith.participant;
 
-import com.lkkp.runwith.match.Match;
-import com.lkkp.runwith.member.Member;
-import jakarta.persistence.Entity;
+    import com.lkkp.runwith.match.Match;
+    import com.lkkp.runwith.member.Member;
+    import jakarta.persistence.Entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.TypeAlias;
+    import jakarta.persistence.*;
+    import lombok.*;
+    import org.springframework.data.annotation.TypeAlias;
 
-@Getter
-@Builder
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "Participant", schema = "runwith_db")
-public class Participant {
+    @Getter
+    @Setter
+    @Builder
+    @Entity
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Table(name = "Participant", schema = "runwith_db")
+    public class Participant {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "id", unique = true, nullable = false)
+        private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Member member;
+        @Setter
+        @Getter
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "match_id")
-    private Match match;
+        @Setter
+        @Getter
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "match_id")
+        private Match match;
 
-    public void setMemberId(Long memberId) {
-        if (member == null) {
-            member = new Member();
+        @Column(name = "completed")
+        private boolean completed;
+
+        @Column(name = "completionTime")
+        private Long completionTime;
+
+        public Long getMemberId(){
+            return member.getId();
         }
-        member.setId(memberId);
-    }
 
-    public void setMatchId(Long matchId) {
-        if (match == null) {
-            match = new Match();
+        public Long getMatchId(){
+            return match.getMatchId();
         }
-        match.setMatchId(matchId);
     }
-}
