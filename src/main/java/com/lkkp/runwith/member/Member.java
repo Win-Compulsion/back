@@ -26,15 +26,16 @@ public class Member {
     private Long id;
 
 
-    @Column(nullable = false) // 사용자 구글 이메일
+    @Column(name = "email", nullable = false) // 사용자 구글 이메일
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "gender", nullable = false)
     private Boolean gender;
 
-    @Column(nullable = false)
+    @Column(name = "nickname", nullable = false)
     private String profileName;
-    @Column(nullable = true)
+
+    @Column(name = "profileImage",nullable = true)
     private String profileImg;
 
 

@@ -2,8 +2,8 @@ package com.lkkp.runwith.websocket.controller;
 
 import com.lkkp.runwith.location.Location;
 import com.lkkp.runwith.location.repository.LocationRepository;
-import com.lkkp.runwith.match.Match;
-import com.lkkp.runwith.match.repository.MatchRepository;
+import com.lkkp.runwith.record.Record;
+import com.lkkp.runwith.record.repository.RecordRepository;
 import com.lkkp.runwith.websocket.LocationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,22 +18,21 @@ public class LocationController {
     private LocationRepository locationRepository;
 
     @Autowired
-    private MatchRepository matchRepository;
+    private RecordRepository recordRepository;
 
     @MessageMapping("/location")
     @SendTo("/topic/locations")
     public LocationMessage updateLocation(LocationMessage locationMessage) {
-        Match match = matchRepository.findById(locationMessage.getMatchId())
+        Record record = recordRepository.findById(locationMessage.getRecordId())
                 .orElseThrow(() -> new RuntimeException("Match not found"));
 
         // Save location updates to the database
         Location location = new Location();
-        location.setUserId(locationMessage.getUserId());
         location.setLatitude(locationMessage.getLatitude());
         location.setLongitude(locationMessage.getLongitude());
         location.setAltitude(locationMessage.getAltitude());
         location.setGPStime(LocalDateTime.now());
-        location.setMatch(match);  // 매치 설정
+        location.setRecord(record);  // 매치 설정
 
         locationRepository.save(location);
 

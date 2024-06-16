@@ -25,26 +25,26 @@ public class Match {
     private Long matchId;
 
 
-    @Column(nullable = true)
+    @Column(name = "MatchStartTime", nullable = true)
     private LocalDateTime startTime;
 
-    @Column(nullable = true)
+    @Column(name = "MatchEndTime", nullable = true)
     private LocalDateTime endTime;
 
-    @Column // 1km 3km 5km >> 1 3 5
+    @Column(name = "MatchDistance") // 1km 3km 5km >> 1 3 5
     private Integer distance;
 
-    @Column // 1 배치했음 0 배치해야됨
+    @Column(name = "MatchType") // 1 배치했음 0 배치해야됨
     private String matchType;
 
-    @Column
+    @Column(name = "MatchResult")
     private Integer matchResult;
 
     @OneToMany(mappedBy = "match")
-    private List<Record> runRecords;
+    private List<Participant> participants;
 
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
-    private List<Location> locations = new ArrayList<>();
+    @OneToMany(mappedBy = "match")
+    private List<Record> runRecords;
 
     public void setMatchId(Long id) {this.matchId = matchId;}
 
@@ -55,10 +55,5 @@ public class Match {
     public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
 
     public void setMatchResult(Integer matchResult) {this.matchResult = matchResult;}
-
-    public void addLocation(Location location) {
-        locations.add(location);
-        location.setMatch(this);
-    }
 
 }
