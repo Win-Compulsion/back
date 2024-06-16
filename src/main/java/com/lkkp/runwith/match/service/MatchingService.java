@@ -4,6 +4,7 @@ package com.lkkp.runwith.match.service;
 import com.lkkp.runwith.IntervalRank.Km1;
 import com.lkkp.runwith.IntervalRank.Km3;
 import com.lkkp.runwith.IntervalRank.Km5;
+import com.lkkp.runwith.record.Record;
 import com.lkkp.runwith.IntervalRank.repository.Km1Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km3Repository;
 import com.lkkp.runwith.IntervalRank.repository.Km5Repository;
@@ -14,12 +15,14 @@ import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.participant.repository.ParticipantRepository;
+import com.lkkp.runwith.record.repository.RecordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,6 +36,7 @@ public class MatchingService {
     private final Km1Repository km1Repository;
     private final Km3Repository km3Repository;
     private final Km5Repository km5Repository;
+    private final RecordRepository recordRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
 
@@ -182,7 +186,6 @@ public class MatchingService {
 
         Match savedMatch = matchRepository.save(match);
 
-
         notifyMatchSuccess(member1, member2, savedMatch);
 
         return savedMatch;
@@ -275,7 +278,31 @@ public class MatchingService {
         // 두 유저가 모두 완주했는지 확인
         boolean allCompleted = match.getParticipants().stream().allMatch(Participant::isCompleted);
         if (allCompleted) {
+
+            saveMatchRecords(match);
             endMatch(matchId);
+        }
+    }
+
+    public void saveMatchRecords(Match match) {
+        for (Participant participant : match.getParticipants()) {
+            Member member = participant.getMember();
+
+            Record record = new Record();
+            record.setMember(member);
+            record.setMatch(match);
+            record.setDistance(match.getDistance()); // Assuming you have this information
+            record.setRundate(new Date());
+            record.setRunningTime(participant.getCompletionTime());
+
+            //평균속도 계산
+            float averageSpeed = calculateAverageSpeed(participant.getCompletionTime(), match.getDistance());
+            record.setAverageSpeed(averageSpeed);
+
+            //변화된 레이팅값 저장
+            record.setChangeRating(0);
+
+            recordRepository.save(record);
         }
     }
 
@@ -302,6 +329,11 @@ public class MatchingService {
 
             System.out.println("Match " + matchId + " has ended. Result: " + result);
         }
+    }
+
+    private float calculateAverageSpeed(Long completionTime, Integer distance) {
+        // Example calculation: distance / (completionTime / 60.0) if completionTime is in seconds
+        return distance / (completionTime / 60.0f);
     }
 
     // 매치 조회, 업데이트, 삭제 등의 추가 메서드를 구현
