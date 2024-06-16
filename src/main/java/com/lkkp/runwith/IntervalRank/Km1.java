@@ -10,25 +10,27 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "1km_Info", schema = "runwith_db")
 public class Km1 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = true)
+    @Column(name = "rating", nullable = true)
     private Integer rating;
 
-    @Column(nullable = true)
+    @Column(name = "win", nullable = true)
     private Integer win;
 
-    @Column(nullable = true)
+    @Column(name = "lose", nullable = true)
     private Integer lose;
 
-    @Column(nullable = true)
+    @Column(name = "best_record", nullable = true)
     private double best_record;
 
-    @OneToOne
-    @JoinColumn(name = "member_ID", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = true)
     private Member member;
 
 

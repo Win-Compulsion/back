@@ -1,6 +1,7 @@
 package com.lkkp.runwith.match;
 
 
+import com.lkkp.runwith.location.Location;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.record.Record;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,20 +25,23 @@ public class Match {
     private Long matchId;
 
 
-    @Column(nullable = true)
+    @Column(name = "MatchStartTime", nullable = true)
     private LocalDateTime startTime;
 
-    @Column(nullable = true)
+    @Column(name = "MatchEndTime", nullable = true)
     private LocalDateTime endTime;
 
-    @Column // 1km 3km 5km >> 1 3 5
+    @Column(name = "MatchDistance") // 1km 3km 5km >> 1 3 5
     private Integer distance;
 
-    @Column // 1 배치했음 0 배치해야됨
-    private Boolean matchType;
+    @Column(name = "MatchType") // 1 배치했음 0 배치해야됨
+    private String matchType;
 
-    @Column
+    @Column(name = "MatchResult")
     private Integer matchResult;
+
+    @OneToMany(mappedBy = "match")
+    private List<Participant> participants;
 
     @OneToMany(mappedBy = "match")
     private List<Record> runRecords;
@@ -45,6 +50,10 @@ public class Match {
 
     public void setStartTime(LocalDateTime startTime) {this.startTime = startTime;}
 
-    public void setMatchType(Boolean matchType) {this.matchType = matchType;}
+    public void setMatchType(String matchType) {this.matchType = matchType;}
+
+    public void setEndTime(LocalDateTime endTime) {this.endTime = endTime;}
+
+    public void setMatchResult(Integer matchResult) {this.matchResult = matchResult;}
 
 }

@@ -21,7 +21,7 @@ public class Participant {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "user_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)

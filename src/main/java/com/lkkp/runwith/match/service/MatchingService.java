@@ -18,6 +18,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class MatchingService {
@@ -58,8 +60,22 @@ public class MatchingService {
     private void startBatchGame(Member member, Integer distance) {
         // 배치 게임을 시작하는 로직
         System.out.println("Starting batch game for member: " + member.getId() + ", distance: " + distance);
+        notifyUserBatchGameStart(member, distance); // Notify user about batch game start
         // 예: 사용자에게 배치 게임이 시작되었음을 알리는 메시지 보내기 등.
         // 실제 게임을 시작하는 API 호출 등의 로직을 여기에 추가할 수 있습니다.
+    }
+
+    // 배치 게임 시작 알림
+    private void notifyUserBatchGameStart(Member member, Integer distance) {
+        // Notify the user that the batch game has started
+        String message = String.format("Batch game started for member: %d, distance: %d", member.getId(), distance);
+        sendNotification(member, message);
+    }
+
+    // Placeholder for sending notifications
+    private void sendNotification(Member member, String message) {
+        System.out.println("Notification to member " + member.getId() + ": " + message);
+        // Implement actual notification logic (e.g., email, SMS, in-app message)
     }
 
     //배치게임 완료 후 레이팅 부여
@@ -147,6 +163,8 @@ public class MatchingService {
     @Transactional
     public Match createMatch(Member member1, Member member2, Integer distance) {
         Match match = new Match();
+        match.setStartTime(LocalDateTime.now()); // Set start time
+        match.setMatchType("Ranked"); // Set match type
         Participant participant1 = Participant.builder()
                 .match(match)
                 .member(member1)
@@ -224,6 +242,15 @@ public class MatchingService {
             default:
                 throw new IllegalArgumentException("Invalid distance");
         }
+    }
+
+    @Transactional
+    public void completeMatch(Long matchId, Integer result) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new RuntimeException("Match not found"));
+        match.setEndTime(LocalDateTime.now());
+        match.setMatchResult(result);
+        matchRepository.save(match);
     }
 
     // 매치 조회, 업데이트, 삭제 등의 추가 메서드를 구현
