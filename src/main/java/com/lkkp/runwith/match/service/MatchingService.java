@@ -16,9 +16,11 @@ import com.lkkp.runwith.participant.Participant;
 import com.lkkp.runwith.participant.repository.ParticipantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,8 @@ public class MatchingService {
     private final Km1Repository km1Repository;
     private final Km3Repository km3Repository;
     private final Km5Repository km5Repository;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     // 참가자를 매칭 큐에 추가
     public void joinQueue(Long memberId, Integer distance) {
@@ -175,7 +179,19 @@ public class MatchingService {
                 .build();
         participantRepository.save(participant1);
         participantRepository.save(participant2);
-        return matchRepository.save(match);
+
+        Match savedMatch = matchRepository.save(match);
+
+
+        notifyMatchSuccess(member1, member2, savedMatch);
+
+        return savedMatch;
+    }
+
+    private void notifyMatchSuccess(Member member1, Member member2, Match match) {
+        String matchId = match.getMatchId().toString();
+        messagingTemplate.convertAndSend("/topic/match/" + member1.getId(), matchId);
+        messagingTemplate.convertAndSend("/topic/match/" + member2.getId(), matchId);
     }
 
     //거리별 레이팅 가져오는 함수
@@ -245,12 +261,47 @@ public class MatchingService {
     }
 
     @Transactional
-    public void completeMatch(Long matchId, Integer result) {
+    public void completeMatch(Long matchId, Long memberId, Long completionTime) {
         Match match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new RuntimeException("Match not found"));
-        match.setEndTime(LocalDateTime.now());
-        match.setMatchResult(result);
-        matchRepository.save(match);
+
+        Participant participant = participantRepository.findByMatchIdAndMemberId(matchId, memberId)
+                .orElseThrow(() -> new RuntimeException("Participant not found"));
+
+        participant.setCompleted(true);
+        participant.setCompletionTime(completionTime);
+        participantRepository.save(participant);
+
+        // 두 유저가 모두 완주했는지 확인
+        boolean allCompleted = match.getParticipants().stream().allMatch(Participant::isCompleted);
+        if (allCompleted) {
+            endMatch(matchId);
+        }
+    }
+
+    // 매치 종료 처리
+    private void endMatch(Long matchId) {
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new RuntimeException("Match not found"));
+
+        List<Participant> participants = match.getParticipants();
+        if (participants.size() == 2) {
+            Participant participant1 = participants.get(0);
+            Participant participant2 = participants.get(1);
+
+            String result;
+            if (participant1.getCompletionTime() < participant2.getCompletionTime()) {
+                result = "user1";
+            } else if (participant1.getCompletionTime() > participant2.getCompletionTime()) {
+                result = "user2";
+            } else {
+                result = "draw";
+            }
+
+            newRating(participant1.getMember().getId(), participant2.getMember().getId(), match.getDistance(), result);
+
+            System.out.println("Match " + matchId + " has ended. Result: " + result);
+        }
     }
 
     // 매치 조회, 업데이트, 삭제 등의 추가 메서드를 구현
