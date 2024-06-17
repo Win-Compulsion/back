@@ -18,9 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/distance")
 public class IntervalRankController {
-    private Km1Repository km1Repository;
-    private Km3Repository km3Repository;
-    private Km5Repository km5Repository;
+    private final Km1Repository km1Repository;
+    private final Km3Repository km3Repository;
+    private final Km5Repository km5Repository;
 
     @GetMapping("/km1")
     public List<Km1> getKm1Info(@RequestParam int member_id) {
