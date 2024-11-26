@@ -94,29 +94,47 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/member/save-data")
+    @PostMapping("/member/savedata")
     public String saveGender(@RequestBody Member member) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.info("Received request: {}", member);
+
         try {
+            logger.info("Received request: {}", member); // 요청 수신 로그
+
             // 기존 멤버를 찾거나 새로 생성
             Member existingMember = memberRepository.findByEmail(member.getEmail())
                     .orElse(null); // 이미 있는 회원은 가져오기, 없으면 null로 설정
 
             if (existingMember == null) {
                 // 기존 멤버가 없으면 새로 생성
+                logger.info("No existing member found. Creating new member for email: {}", member.getEmail());
                 existingMember = new Member();
                 existingMember.setEmail(member.getEmail());
+            } else {
+                logger.info("Found existing member for email: {}", member.getEmail());
+            }
+
+            // profileName이 null이면 기본값을 설정
+            String profileName = member.getProfileName();
+            if (profileName == null || profileName.isEmpty()) {
+                logger.info("Profile name is null or empty, setting default value.");
+                profileName = "defaultProfile"; // 기본값 설정
             }
 
             // 사용자 정보 설정
             existingMember.setProfileName(member.getProfileName());
             existingMember.setProfileImg(member.getProfileImg());
             existingMember.setGender(member.getGender());
+            logger.info("Setting member data: {}", existingMember);
 
             // 멤버 저장
             memberRepository.save(existingMember);
+            logger.info("Member data saved successfully for email: {}", member.getEmail());
 
             return "GENDER save success";
         } catch (Exception e) {
+            logger.error("Error saving member data: {}", e.getMessage());
             return "GENDER save fail: " + e.getMessage();
         }
     }
