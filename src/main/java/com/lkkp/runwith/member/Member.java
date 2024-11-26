@@ -13,11 +13,12 @@ import org.springframework.web.servlet.tags.form.SelectTag;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
-@Table(name = "User_Info", schema = "runwith_db")
+@Table(name = "User_Info", schema = "runwith")
 public class Member {
 
     @Id

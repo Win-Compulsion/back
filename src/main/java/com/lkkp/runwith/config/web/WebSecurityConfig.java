@@ -18,7 +18,7 @@ public class WebSecurityConfig{
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/actuator/**").permitAll() // Actuator 엔드포인트 접근 설정
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults());

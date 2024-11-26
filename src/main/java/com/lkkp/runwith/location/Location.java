@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "gps_data", schema = "runwith_db")
+@Table(name = "gps_data", schema = "runwith")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

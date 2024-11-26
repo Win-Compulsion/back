@@ -6,8 +6,9 @@ import com.lkkp.runwith.member.repository.MemberRepository;
 import com.lkkp.runwith.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -17,6 +18,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @GetMapping("/hello")
     public String hello() {
@@ -30,31 +32,30 @@ public class MemberController {
 
     // 회원 아이디로 조회 > Member JSON 반환
     @GetMapping("/member/{id}")
-    public MemberDto getMember(@PathVariable("id") Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(
-                    NoSuchElementException::new);
-
-        return MemberDto.toDto(member);
+    public Member getMember(@PathVariable("id") Long id) {
+        return memberRepository.findById(id).orElseThrow(
+                NoSuchElementException::new);
     }
 
     @GetMapping("/member/findemail/{email:.+}")
     public MemberDto getMemberByEmail(@PathVariable("email") String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        logger.info("Request received to find member by email: {}", email);
 
-        return MemberDto.toDto(member);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    logger.warn("No member found with email: {}", email);
+                    return new NoSuchElementException("No member found with email: " + email);
+                });
+
+        MemberDto memberDto = MemberDto.toDto(member);
+        logger.info("Successfully found member with email: {}", email);
+        return memberDto;
     }
 
     // 모든 회원 조회
     @GetMapping("/member/all")
-    public List<MemberDto> getAllMembers() {
-
-        List<Member> members = memberRepository.findAll();
-        List<MemberDto> memberDtos = new ArrayList<>();
-        for (Member member : members) {
-            memberDtos.add(MemberDto.toDto(member));
-        }
-
-        return memberDtos;
+    public List<Member> getAllMembers() {
+        return memberRepository.findAll();
     }
 
 
@@ -81,7 +82,7 @@ public class MemberController {
         }
     }
 
-    // 회원 수정
+
     @PostMapping("/member/edit/{id}")
     public String edit(@PathVariable("id") Long id, @RequestBody MemberDto memberDto) {
         String result = memberService.memEdit(id, memberDto);
@@ -92,5 +93,33 @@ public class MemberController {
             return "EDIT fail";
         }
     }
+
+    @PostMapping("/member/save-data")
+    public String saveGender(@RequestBody Member member) {
+        try {
+            // 기존 멤버를 찾거나 새로 생성
+            Member existingMember = memberRepository.findByEmail(member.getEmail())
+                    .orElse(null); // 이미 있는 회원은 가져오기, 없으면 null로 설정
+
+            if (existingMember == null) {
+                // 기존 멤버가 없으면 새로 생성
+                existingMember = new Member();
+                existingMember.setEmail(member.getEmail());
+            }
+
+            // 사용자 정보 설정
+            existingMember.setProfileName(member.getProfileName());
+            existingMember.setProfileImg(member.getProfileImg());
+            existingMember.setGender(member.getGender());
+
+            // 멤버 저장
+            memberRepository.save(existingMember);
+
+            return "GENDER save success";
+        } catch (Exception e) {
+            return "GENDER save fail: " + e.getMessage();
+        }
+    }
+
 
 }

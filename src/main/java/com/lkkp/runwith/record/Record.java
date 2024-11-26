@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "Running_Records", schema = "runwith_db")
+@Table(name = "Running_Records", schema = "runwith")
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

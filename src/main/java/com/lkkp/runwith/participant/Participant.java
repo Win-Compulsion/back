@@ -14,7 +14,7 @@
     @Entity
     @NoArgsConstructor
     @AllArgsConstructor
-    @Table(name = "Participant", schema = "runwith_db")
+    @Table(name = "Participant", schema = "runwith")
     public class Participant {
 
         @Id

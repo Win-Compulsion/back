@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "3km_Info", schema = "runwith_db")
+@Table(name = "3km_Info", schema = "runwith")
 public class Km3 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
