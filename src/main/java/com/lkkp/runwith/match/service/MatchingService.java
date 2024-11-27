@@ -23,11 +23,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,11 +41,20 @@ public class MatchingService {
     private final SimpMessagingTemplate messagingTemplate;
 
     private final Map<Long, Match> activeMatches = new HashMap<>();
+    private Map<String, Queue<Member>> matchQueues = new HashMap<>();
+
 
     // 활성 매치 조회
-    public Optional<Match> findActiveMatchByUserId(Long userId) {
-        return Optional.ofNullable(activeMatches.get(userId));
+    public Optional<Match> findActiveMatchByUserId(Long memberId) {
+        // activeMatches에서 memberId를 기반으로 매칭을 찾음
+        return Optional.ofNullable(activeMatches.get(memberId));
     }
+
+    // findMemberInQueue 메서드를 MatchingService로 가져오기
+    public Member findMemberInQueue(Long memberId) {
+        return matchQueue.findMemberInQueue(memberId);
+    }
+
 
     public void addActiveMatch(Long userId, Match match) {
         activeMatches.put(userId, match);
@@ -65,15 +70,23 @@ public class MatchingService {
         return activeMatches.containsKey(userId);
     }
 
-    // 매칭 상태 확인
-    public String getMatchStatus(Long queueId) {
-        if (matchQueue.findMemberInQueue(queueId) != null) {
-            return "waiting";
+    // 매칭 성공 시
+    public void createMatchAndUpdateStatus(Member member1, Member member2, Integer distance) {
+        Match match = createMatch(member1, member2, distance);
+        activeMatches.put(member1.getId(), match);
+        activeMatches.put(member2.getId(), match);
+        log.info("Match created for Members {} and {}", member1.getId(), member2.getId());
+    }
+
+    // 큐에서 멤버를 꺼낸 후, 매칭된 멤버를 찾을 때
+    public String getMatchStatus(Long memberId) {
+        if (activeMatches.containsKey(memberId)) {
+            return "success";  // 매칭된 멤버는 성공 상태
         }
-        if (findActiveMatchByUserId(queueId).isPresent()) {
-            return "success";
+        if (findMemberInQueue(memberId) != null) {
+            return "waiting";  // 큐에서 멤버가 있으면 대기 중
         }
-        return "failed";
+        return "failed";  // 그 외의 경우는 실패
     }
 
     public Map<String, Object> joinQueue(Long userId, Integer distance, Boolean gender) {
@@ -100,11 +113,10 @@ public class MatchingService {
     @Transactional
     public boolean attemptMatch(Integer distance, Boolean gender) {
         while (true) {
-            // 큐에서 두 명을 동시에 꺼내는 로직을 사용
             Member member1 = matchQueue.getNextMember(distance, gender);
             Member member2 = matchQueue.getNextMember(distance, gender);
 
-            // 두 명이 없다면 다시 큐에 넣고 종료
+            // 두 명이 없으면 큐에 다시 넣고 종료
             if (member1 == null || member2 == null) {
                 if (member1 != null) matchQueue.addMemberToQueue(member1, distance);
                 if (member2 != null) matchQueue.addMemberToQueue(member2, distance);
@@ -113,13 +125,18 @@ public class MatchingService {
 
             // 두 명의 rating 차이를 계산
             int ratingDiff = calculateRatingDifference(member1, member2, distance);
+            log.info("Attempting match: Member1 ID = {}, Member2 ID = {}, Rating Diff = {}",
+                    member1.getId(), member2.getId(), ratingDiff);
+
             if (ratingDiff <= 100) {
-                // 매칭 성공
+                // 매칭 성공 시 처리
                 createMatch(member1, member2, distance);
                 log.info("Match created: {} vs {} for distance = {}", member1.getId(), member2.getId(), distance);
                 return true;
             } else {
                 // 매칭 실패 시 큐에 다시 넣기
+                log.info("Match failed: Member1 ID = {}, Member2 ID = {}, Rating Diff = {}",
+                        member1.getId(), member2.getId(), ratingDiff);
                 matchQueue.addMemberToQueue(member1, distance);
                 matchQueue.addMemberToQueue(member2, distance);
             }
@@ -135,6 +152,7 @@ public class MatchingService {
     private int calculateRatingDifference(Member member1, Member member2, Integer distance) {
         int rating1 = getRating(member1.getId(), distance);
         int rating2 = getRating(member2.getId(), distance);
+        log.info("Rating difference: Member1 ID = {}, Member2 ID = {}, Diff = {}", rating1, rating2, Math.abs(rating1-rating2));
         return Math.abs(rating1 - rating2);
     }
 

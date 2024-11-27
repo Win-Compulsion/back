@@ -24,15 +24,27 @@ public class MatchQueue {
 
     }
 
+    public boolean isAnyQueueSizeTwo(){
+        for(Queue<Member> queue : matchQueues.values()){
+            if(queue.size() == 2){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Member findMemberInQueue(Long memberId) {
-        for (Map.Entry<String, Queue<Member>> entry : matchQueues.entrySet()) {
-            for (Member member : entry.getValue()) {
+        // 해당 키에 대한 큐를 먼저 찾고, 큐에서 멤버를 찾는 방식으로 성능 개선
+        for (Queue<Member> queue : matchQueues.values()) {
+            for (Member member : queue) {
                 if (member.getId().equals(memberId)) {
-                    log.info("Member found in queue: Key = {}, Member ID = {}", entry.getKey(), memberId);
+                    log.info("Member found in queue: Member ID = {}", memberId);
                     return member;
                 }
             }
         }
+
+        // 멤버가 없을 경우 로그 남기기
         log.info("Member not found in any queue: Member ID = {}", memberId);
         return null;
     }
@@ -50,21 +62,17 @@ public class MatchQueue {
     }
 
     public Long addMemberToQueue(Member member, Integer distance) {
-        String key = getKey(member, distance);
+        String key = (member.getGender() ? "M" : "F") + distance;
         Queue<Member> queue = matchQueues.get(key);
 
         if (queue == null) {
             throw new IllegalStateException("Queue not found for key: " + key);
         }
 
-        // 큐에 참가자 추가
         queue.offer(member);
         log.info("Added member to queue: Key = {}, Member ID = {}", key, member.getId());
-
-        // queueId는 키를 사용하거나, 다른 방식으로 고유 ID를 생성할 수 있음
-        Long queueId = generateQueueId(key);  // 고유한 queueId를 생성하는 방식
-
-        return queueId;  // 큐 ID 반환
+        log.info("Queue size = {}", queue.size());
+        return member.getId();
     }
     private Long generateQueueId(String key) {
         return Long.valueOf(key.hashCode());  // key의 해시값을 사용하여 queueId 생성
@@ -74,11 +82,13 @@ public class MatchQueue {
         String key = (gender ? "M" : "F") + distance;
         Queue<Member> queue = matchQueues.get(key);
 
-        if (queue == null) {
-            throw new IllegalStateException("Queue not found for key: " + key);
+        if (queue == null || queue.isEmpty()) {
+            return null;  // 큐가 비어 있으면 null 반환
         }
 
-        return queue.poll();
+        Member member = queue.poll();
+        log.info("Polled member from queue: Key = {}, Member ID = {}", key, member.getId());
+        return member;
     }
 
     public boolean isQueueEmpty(Integer distance, Boolean gender) {

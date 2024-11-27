@@ -57,15 +57,16 @@ public class MatchController {
 
 
     // 매칭 상태 확인 API
-    @GetMapping("/status/{queueId}")
-    public ResponseEntity<Map<String, Object>> getMatchStatus(@PathVariable Long queueId) {
-        String status = matchingService.getMatchStatus(queueId);
+    @GetMapping("/status/{memberId}")
+    public ResponseEntity<Map<String, Object>> getMatchStatus(@PathVariable Long memberId) {
+        // 매칭 상태를 memberId로 확인
+        String status = matchingService.getMatchStatus(memberId);
 
         // JSON 응답 생성
         Map<String, Object> response = new HashMap<>();
-        response.put("queueId", queueId);
+        response.put("memberId", memberId); // queueId 대신 memberId 사용
         response.put("status", status);
-        log.info(response.get("status").toString());
+        log.info("Matching status for Member ID {}: {}", memberId, status);
 
         return ResponseEntity.ok(response);
     }
