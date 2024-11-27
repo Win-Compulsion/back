@@ -38,7 +38,7 @@ public class MatchingService {
     private final Km3Repository km3Repository;
     private final Km5Repository km5Repository;
     private final RecordRepository recordRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+//    private final SimpMessagingTemplate messagingTemplate;
 
     private final Map<Long, Match> activeMatches = new HashMap<>();
     private Map<String, Queue<Member>> matchQueues = new HashMap<>();
@@ -210,7 +210,7 @@ public class MatchingService {
     private void notifyUsers(Match match, Member... members) {
         for (Member member : members) {
             String topic = "/topic/match/" + member.getId();
-            messagingTemplate.convertAndSend(topic, match.getMatchId().toString());
+//            messagingTemplate.convertAndSend(topic, match.getMatchId().toString());
             log.info("Match notification sent to User ID = {}", member.getId());
         }
     }

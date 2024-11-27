@@ -41,6 +41,14 @@ public class Match {
     @Column(name = "MatchResult")
     private Integer matchResult;
 
+    @Setter
+    @Column(name = "distance_covered", nullable = true)
+    private Double distanceCovered;
+
+    @Setter
+    @Column(name = "elapsed_time", nullable = true)
+    private Long elapsedTime; // 초 단위 경과 시간
+
     @OneToMany(mappedBy = "match")
     private List<Participant> participants;
 
