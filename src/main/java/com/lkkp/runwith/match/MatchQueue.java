@@ -24,6 +24,24 @@ public class MatchQueue {
 
     }
 
+    public Member findMemberInQueue(Long memberId) {
+        for (Map.Entry<String, Queue<Member>> entry : matchQueues.entrySet()) {
+            for (Member member : entry.getValue()) {
+                if (member.getId().equals(memberId)) {
+                    log.info("Member found in queue: Key = {}, Member ID = {}", entry.getKey(), memberId);
+                    return member;
+                }
+            }
+        }
+        log.info("Member not found in any queue: Member ID = {}", memberId);
+        return null;
+    }
+
+    public boolean isMemberInQueue(Long memberId) {
+        return findMemberInQueue(memberId) != null;
+    }
+
+
     private String getKey(Member member, Integer distance) {
         if (!List.of(1, 3, 5).contains(distance)) {
             throw new IllegalArgumentException("Invalid distance value: " + distance);

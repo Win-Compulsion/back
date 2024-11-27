@@ -5,6 +5,7 @@ import com.lkkp.runwith.match.repository.MatchRepository;
 import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/match")
@@ -51,6 +53,20 @@ public class MatchController {
             response.put("message", "An error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    // 매칭 상태 확인 API
+    @GetMapping("/status/{queueId}")
+    public ResponseEntity<String> getMatchStatus(@PathVariable Long queueId) {
+        String status = matchingService.getMatchStatus(queueId);
+
+        // JSON 응답 생성
+        Map<String, Object> response = new HashMap<>();
+        response.put("queueId", queueId);
+        response.put("status", status);
+        log.info(response.get("status").toString());
+
+        return ResponseEntity.ok(status);
     }
 
 //    @PostMapping("/completeBatch")

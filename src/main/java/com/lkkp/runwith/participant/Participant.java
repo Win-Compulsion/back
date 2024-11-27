@@ -40,6 +40,16 @@
         @Column(name = "completionTime")
         private Long completionTime;
 
+        // 빌더 패턴으로 Match와 Member를 설정하도록 변경
+        public static Participant create(Match match, Member member) {
+            return Participant.builder()
+                    .match(match)
+                    .member(member)
+                    .completed(false)  // 기본값
+                    .completionTime(null)  // 기본값
+                    .build();
+        }
+
         public Long getMemberId(){
             return member.getId();
         }
