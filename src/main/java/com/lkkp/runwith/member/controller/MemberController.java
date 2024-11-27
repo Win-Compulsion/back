@@ -4,6 +4,12 @@ import com.lkkp.runwith.member.Member;
 import com.lkkp.runwith.member.dto.MemberDto;
 import com.lkkp.runwith.member.repository.MemberRepository;
 import com.lkkp.runwith.member.service.MemberService;
+import com.lkkp.runwith.IntervalRank.Km1;
+import com.lkkp.runwith.IntervalRank.Km3;
+import com.lkkp.runwith.IntervalRank.Km5;
+import com.lkkp.runwith.IntervalRank.repository.Km1Repository;
+import com.lkkp.runwith.IntervalRank.repository.Km3Repository;
+import com.lkkp.runwith.IntervalRank.repository.Km5Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -18,6 +24,9 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final Km1Repository km1Repository;
+    private final Km3Repository km3Repository;
+    private final Km5Repository km5Repository;
     private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
     @GetMapping("/hello")
@@ -132,11 +141,48 @@ public class MemberController {
             memberRepository.save(existingMember);
             logger.info("Member data saved successfully for email: {}", member.getEmail());
 
+            // 1km, 3km, 5km 기본 레이팅 데이터 생성 및 저장
+            initializeRatingData(existingMember);
+
             return "GENDER save success";
         } catch (Exception e) {
             logger.error("Error saving member data: {}", e.getMessage());
             return "GENDER save fail: " + e.getMessage();
         }
+    }
+
+    private void initializeRatingData(Member member) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
+        // 1km 데이터 저장
+        Km1 ratingData1km = new Km1();
+        ratingData1km.setMember(member);
+        ratingData1km.setRating(1000);
+        ratingData1km.setWin(0);
+        ratingData1km.setLose(0);
+        ratingData1km.setBest_record(0.0);
+        km1Repository.save(ratingData1km);
+        logger.info("Initialized 1km rating data: {}", ratingData1km);
+
+        // 3km 데이터 저장
+        Km3 ratingData3km = new Km3();
+        ratingData3km.setMember(member);
+        ratingData3km.setRating(1000);
+        ratingData3km.setWin(0);
+        ratingData3km.setLose(0);
+        ratingData3km.setBest_record(0.0);
+        km3Repository.save(ratingData3km);
+        logger.info("Initialized 3km rating data: {}", ratingData3km);
+
+        // 5km 데이터 저장
+        Km5 ratingData5km = new Km5();
+        ratingData5km.setMember(member);
+        ratingData5km.setRating(1000);
+        ratingData5km.setWin(0);
+        ratingData5km.setLose(0);
+        ratingData5km.setBest_record(0.0);
+        km5Repository.save(ratingData5km);
+        logger.info("Initialized 5km rating data: {}", ratingData5km);
     }
 
 
