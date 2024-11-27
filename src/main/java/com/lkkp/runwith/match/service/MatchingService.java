@@ -76,39 +76,55 @@ public class MatchingService {
         return "failed";
     }
 
-    // 큐에 참가자 추가
-    public boolean joinQueue(Long userId, Integer distance, Boolean gender) {
+    public Map<String, Object> joinQueue(Long userId, Integer distance, Boolean gender) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 
-        matchQueue.addMemberToQueue(member, distance);
-        log.info("User {} added to queue: distance = {}, gender = {}", userId, distance, gender);
-        return attemptMatch(distance, gender);
+        // 참가자를 큐에 추가
+        Long queueId = matchQueue.addMemberToQueue(member, distance); // queueId 반환하도록 수정
+
+        log.info("User {} added to queue: distance = {}, gender = {}, queueId = {}", userId, distance, gender, queueId);
+
+        // 매칭을 시도하고, 성공하면 "success", 아니면 "waiting"
+        String status = attemptMatch(distance, gender) ? "success" : "waiting";
+
+        // 응답을 반환 (queueId와 status 포함)
+        Map<String, Object> response = new HashMap<>();
+        response.put("queueId", queueId);
+        response.put("status", status);
+
+        return response;
     }
 
     // 매칭 시도 (반복문으로 변경)
     @Transactional
     public boolean attemptMatch(Integer distance, Boolean gender) {
         while (true) {
+            // 큐에서 두 명을 동시에 꺼내는 로직을 사용
             Member member1 = matchQueue.getNextMember(distance, gender);
             Member member2 = matchQueue.getNextMember(distance, gender);
 
+            // 두 명이 없다면 다시 큐에 넣고 종료
             if (member1 == null || member2 == null) {
                 if (member1 != null) matchQueue.addMemberToQueue(member1, distance);
                 if (member2 != null) matchQueue.addMemberToQueue(member2, distance);
                 break;
             }
 
+            // 두 명의 rating 차이를 계산
             int ratingDiff = calculateRatingDifference(member1, member2, distance);
             if (ratingDiff <= 100) {
+                // 매칭 성공
                 createMatch(member1, member2, distance);
                 log.info("Match created: {} vs {} for distance = {}", member1.getId(), member2.getId(), distance);
                 return true;
             } else {
+                // 매칭 실패 시 큐에 다시 넣기
                 matchQueue.addMemberToQueue(member1, distance);
                 matchQueue.addMemberToQueue(member2, distance);
             }
 
+            // 큐가 비었으면 종료
             if (matchQueue.isQueueEmpty(distance, gender)) {
                 break;
             }

@@ -41,10 +41,10 @@ public class MatchController {
             boolean gender = member.getGender();
 
             // attemptMatch를 호출하여 매칭 시도
-            matchingService.joinQueue(userId, distance, gender);
-
-            response.put("success", true);
-            response.put("message", "Waiting for a match...");
+            Map<String, Object> matchResponse = matchingService.joinQueue(userId, distance, gender);
+            // 응답 형식 수정
+            response.put("queueId", matchResponse.get("queueId"));
+            response.put("status", matchResponse.get("status"));
 
             return ResponseEntity.ok(response);
 
@@ -55,9 +55,10 @@ public class MatchController {
         }
     }
 
+
     // 매칭 상태 확인 API
     @GetMapping("/status/{queueId}")
-    public ResponseEntity<String> getMatchStatus(@PathVariable Long queueId) {
+    public ResponseEntity<Map<String, Object>> getMatchStatus(@PathVariable Long queueId) {
         String status = matchingService.getMatchStatus(queueId);
 
         // JSON 응답 생성
@@ -66,7 +67,7 @@ public class MatchController {
         response.put("status", status);
         log.info(response.get("status").toString());
 
-        return ResponseEntity.ok(status);
+        return ResponseEntity.ok(response);
     }
 
 //    @PostMapping("/completeBatch")

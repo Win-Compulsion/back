@@ -49,7 +49,7 @@ public class MatchQueue {
         return (member.isGender() ? "M" : "F") + distance;
     }
 
-    public void addMemberToQueue(Member member, Integer distance) {
+    public Long addMemberToQueue(Member member, Integer distance) {
         String key = getKey(member, distance);
         Queue<Member> queue = matchQueues.get(key);
 
@@ -57,8 +57,17 @@ public class MatchQueue {
             throw new IllegalStateException("Queue not found for key: " + key);
         }
 
+        // 큐에 참가자 추가
         queue.offer(member);
         log.info("Added member to queue: Key = {}, Member ID = {}", key, member.getId());
+
+        // queueId는 키를 사용하거나, 다른 방식으로 고유 ID를 생성할 수 있음
+        Long queueId = generateQueueId(key);  // 고유한 queueId를 생성하는 방식
+
+        return queueId;  // 큐 ID 반환
+    }
+    private Long generateQueueId(String key) {
+        return Long.valueOf(key.hashCode());  // key의 해시값을 사용하여 queueId 생성
     }
 
     public Member getNextMember(Integer distance, Boolean gender) {
