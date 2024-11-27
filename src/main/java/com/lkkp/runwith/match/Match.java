@@ -22,6 +22,7 @@ public class Match {
 
     @Id
     @Column(name = "match_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long matchId;
 
 

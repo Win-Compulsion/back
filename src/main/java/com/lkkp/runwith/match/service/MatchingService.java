@@ -129,9 +129,12 @@ public class MatchingService {
                     member1.getId(), member2.getId(), ratingDiff);
 
             if (ratingDiff <= 100) {
+
                 // 매칭 성공 시 처리
-                createMatch(member1, member2, distance);
+                Match match = createMatch(member1, member2, distance);
                 log.info("Match created: {} vs {} for distance = {}", member1.getId(), member2.getId(), distance);
+                activeMatches.put(member1.getId(), match);
+                activeMatches.put(member2.getId(), match);
                 return true;
             } else {
                 // 매칭 실패 시 큐에 다시 넣기
@@ -167,20 +170,40 @@ public class MatchingService {
 
     @Transactional
     public Match createMatch(Member member1, Member member2, Integer distance) {
+        // 매치 생성
         Match match = Match.builder()
                 .startTime(LocalDateTime.now())  // 현재 시간으로 시작 시간 설정
                 .matchType("Ranked")  // 매치 타입 설정 (예: Ranked)
                 .distance(distance)  // 매치 거리 설정
                 .matchResult(0)  // 초기 값 (경기 결과는 아직 없음)
                 .build();
+        log.info("Match created: Match ID = {}", match.getMatchId());
 
-        Participant participant1 = Participant.create(match, member1);
-        Participant participant2 = Participant.create(match, member2);
 
-        matchRepository.save(match);
-        participantRepository.saveAll(List.of(participant1, participant2));
+        // 참가자 생성
+        Participant participant1 = Participant.create(match, member1);  // 참가자1 생성
+        Participant participant2 = Participant.create(match, member2);  // 참가자2 생성
+        // 디버깅: 참가자 객체 확인
+        log.info("Participant1 created: {}", participant1);
+        log.info("Participant2 created: {}", participant2);
 
-        notifyUsers(match, member1, member2);
+        // 객체들이 정상적으로 생성되었는지 확인 (디버깅 목적)
+        if (participant1 == null || participant2 == null) {
+            throw new IllegalStateException("Participants creation failed: " +
+                    "participant1 = " + participant1 + ", participant2 = " + participant2);
+        }
+
+        // 매치와 참가자 저장
+        matchRepository.save(match);  // 매치 저장
+        participantRepository.saveAll(List.of(participant1, participant2));  // 참가자들 저장
+
+
+        // 저장된 후 확인 로그
+        log.info("Participants saved: Member1 = {}, Member2 = {}", member1.getId(), member2.getId());
+        // 사용자에게 매치 알림 전송
+//        notifyUsers(match, member1, member2);
+
+        // 매치 객체 반환
         return match;
     }
 
